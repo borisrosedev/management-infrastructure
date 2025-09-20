@@ -1,0 +1,53 @@
+<mxfile host="65bd71144e">
+    <diagram id="Pr9_1Fm3F_2bbIHLTMut" name="switch-L3">
+        <mxGraphModel dx="1256" dy="448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="135" style="html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;shape=link;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;" edge="1" parent="1" source="136" target="143">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="136" value="192.168.21.10" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Personal_Computer.svg;" vertex="1" parent="1">
+                    <mxGeometry x="190" y="200" width="45.6" height="61.800000000000004" as="geometry"/>
+                </mxCell>
+                <mxCell id="137" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;shape=link;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;" edge="1" parent="1" source="138" target="143">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="138" value="192.168.20.10" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Personal_Computer.svg;" vertex="1" parent="1">
+                    <mxGeometry x="1080" y="170" width="45.6" height="61.800000000000004" as="geometry"/>
+                </mxCell>
+                <mxCell id="139" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#9673a6;shape=link;fillColor=#e1d5e7;strokeWidth=2;" edge="1" parent="1" source="140" target="143">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="140" value="192.168.21.11" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Personal_Computer.svg;" vertex="1" parent="1">
+                    <mxGeometry x="620" y="70" width="45.6" height="61.800000000000004" as="geometry"/>
+                </mxCell>
+                <mxCell id="141" style="edgeStyle=none;html=1;shape=link;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;" edge="1" parent="1" source="142" target="143">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="142" value="192.168.24.10" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Personal_Computer.svg;imageBorder=default;" vertex="1" parent="1">
+                    <mxGeometry x="1070" y="590" width="45.6" height="61.800000000000004" as="geometry"/>
+                </mxCell>
+                <mxCell id="143" value="L3 Switch" style="shape=rect;fillColor=#1192E8;aspect=fixed;resizable=0;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;strokeColor=none;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="594.4" y="500" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="144" value="" style="fillColor=#ffffff;strokeColor=none;dashed=0;outlineConnect=0;html=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;part=1;movable=0;resizable=0;rotatable=0;shape=mxgraph.ibm_cloud.switch-layer-3" vertex="1" parent="143">
+                    <mxGeometry width="24" height="24" relative="1" as="geometry">
+                        <mxPoint x="12" y="12" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="149" value="Router" style="shape=rect;fillColor=#1192E8;aspect=fixed;resizable=0;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;strokeColor=none;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="187.6" y="800" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="150" value="" style="fillColor=#ffffff;strokeColor=none;dashed=0;outlineConnect=0;html=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;part=1;movable=0;resizable=0;rotatable=0;shape=mxgraph.ibm_cloud.router" vertex="1" parent="149">
+                    <mxGeometry width="24" height="24" relative="1" as="geometry">
+                        <mxPoint x="12" y="12" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="151" style="edgeStyle=none;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;shape=link;" edge="1" parent="1" source="144" target="149">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

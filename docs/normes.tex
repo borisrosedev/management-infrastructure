@@ -1,0 +1,158 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=1.8cm]{geometry}
+
+% Encodage & polices
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Langue
+\usepackage[french]{babel}
+
+% Couleurs & tableaux
+\usepackage[table]{xcolor} % pour \rowcolors
+\usepackage{colortbl}
+\usepackage{longtable}     % <-- pour l'environnement longtable
+
+% Boîtes et graphiques
+\usepackage[most]{tcolorbox}
+
+
+% Tableaux
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{pifont}
+
+
+\begin{document}
+
+
+
+\begin{tcolorbox}[colback=cyan!5,colframe=cyan!60!black,title=Qu'est-ce que l'ISO/IEC 27001 ?]
+
+\textbf{ISO/IEC 27001} est une norme internationale de référence pour la 
+\textbf{gestion de la sécurité de l’information}.  
+Elle définit un \textit{Système de Management de la Sécurité de l’Information (SMSI)} permettant aux 
+organisations de protéger efficacement leurs données sensibles contre les risques de perte, vol, altération ou accès non autorisé.  
+
+\medskip
+\textbf{Objectifs principaux :}
+\begin{itemize}
+  \item Assurer la \textbf{confidentialité}, l’\textbf{intégrité} et la \textbf{disponibilité} de l’information.
+  \item Identifier et évaluer les risques liés à la sécurité de l’information.
+  \item Mettre en place des contrôles adaptés pour réduire ces risques.
+  \item Instaurer une démarche d’\textbf{amélioration continue}.
+\end{itemize}
+
+\medskip
+\textbf{Éléments clés de la norme :}
+\begin{itemize}
+  \item \textbf{Contexte organisationnel :} analyse des besoins, des parties prenantes et du périmètre du SMSI.
+  \item \textbf{Leadership :} implication de la direction et définition des responsabilités.
+  \item \textbf{Planification :} gestion des risques et opportunités.
+  \item \textbf{Support :} ressources, compétences, sensibilisation et communication.
+  \item \textbf{Exploitation :} mise en œuvre des mesures de sécurité.
+  \item \textbf{Évaluation :} audits internes, suivi des performances, revue de direction.
+  \item \textbf{Amélioration continue :} actions correctives et évolutives.
+\end{itemize}
+
+\medskip
+\textbf{Exemple d’application en entreprise :}
+\begin{itemize}
+  \item Mise en place d’une politique de sécurité informatique.
+  \item Contrôle des accès aux systèmes critiques.
+  \item Gestion des incidents de sécurité et plan de continuité d’activité.
+\end{itemize}
+
+\medskip
+\textbf{Avantage :} l’obtention de la certification ISO/IEC 27001 démontre la maturité 
+et la fiabilité d’une organisation en matière de cybersécurité, renforçant la confiance des clients et partenaires.
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=teal!5,colframe=teal!60!black,title=Qu'est-ce que l'ISO/IEC 27005 ?]
+
+\textbf{ISO/IEC 27005} est une norme internationale qui fournit des lignes directrices 
+pour la \textbf{gestion des risques liés à la sécurité de l’information}.  
+Elle est conçue pour accompagner la mise en œuvre d’un \textbf{SMSI (Système de Management de la Sécurité de l’Information)} 
+conformément à la norme \textbf{ISO/IEC 27001}.  
+
+\medskip
+\textbf{Objectifs principaux :}
+\begin{itemize}
+  \item Identifier, analyser et évaluer les risques de sécurité de l’information.
+  \item Déterminer les mesures de sécurité adaptées pour réduire les risques.
+  \item Fournir un cadre méthodologique pour la prise de décision.
+  \item Soutenir l’amélioration continue du SMSI.
+\end{itemize}
+
+\medskip
+\textbf{Étapes clés de la gestion des risques selon ISO/IEC 27005 :}
+\begin{enumerate}
+  \item \textbf{Établissement du contexte} : définir le périmètre et les critères d’évaluation des risques.
+  \item \textbf{Identification des risques} : recenser les actifs, menaces et vulnérabilités.
+  \item \textbf{Analyse des risques} : estimer la vraisemblance et l’impact des incidents.
+  \item \textbf{Évaluation des risques} : prioriser les risques selon leur criticité.
+  \item \textbf{Traitement des risques} : définir et mettre en œuvre des mesures de sécurité.
+  \item \textbf{Acceptation et communication des risques} : décision par la direction.
+  \item \textbf{Surveillance et réexamen} : mise à jour régulière en fonction des évolutions.
+\end{enumerate}
+
+\medskip
+\textbf{Lien avec ISO/IEC 27001 :}
+\begin{itemize}
+  \item ISO/IEC 27001 définit les exigences pour établir un SMSI.
+  \item ISO/IEC 27005 fournit la méthodologie pratique pour gérer les risques sur lesquels repose le SMSI.
+\end{itemize}
+
+\medskip
+\textbf{Exemple concret :}  
+Dans une entreprise, ISO/IEC 27005 peut servir à évaluer le risque de fuite de données via une clé USB non chiffrée, 
+puis recommander comme traitement l’\textit{interdiction technique des ports USB} ou le \textit{chiffrement obligatoire}.
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=yellow!5,colframe=yellow!60!black,title=Qu'est-ce que l'ITIL ?]
+
+\textbf{ITIL (Information Technology Infrastructure Library)} est un \textit{ensemble de bonnes pratiques} 
+pour la \textbf{gestion des services informatiques (ITSM – IT Service Management)}.  
+Il fournit un cadre méthodologique permettant aux organisations de concevoir, délivrer, exploiter et améliorer 
+leurs services informatiques en alignement avec les besoins métiers.  
+
+\medskip
+\textbf{Objectifs principaux :}
+\begin{itemize}
+  \item Améliorer la \textbf{qualité des services informatiques}.
+  \item Optimiser les \textbf{coûts et ressources} liés aux services IT.
+  \item Assurer une meilleure \textbf{satisfaction des utilisateurs et clients}.
+  \item Instaurer une démarche d’\textbf{amélioration continue}.
+\end{itemize}
+
+\medskip
+\textbf{Composantes clés d’ITIL (version 4) :}
+\begin{itemize}
+  \item \textbf{Principes directeurs} : orientation valeur, collaboration, simplicité, optimisation et automatisation.
+  \item \textbf{Système de valeur des services (SVS)} : vision globale intégrant gouvernance, pratiques et amélioration continue.
+  \item \textbf{Pratiques ITIL} (anciennement processus) : gestion des incidents, gestion des changements, gestion des niveaux de service, gestion des actifs, etc.
+  \item \textbf{Chaîne de valeur des services} : activités qui transforment la demande en valeur pour le client.
+\end{itemize}
+
+\medskip
+\textbf{Exemple concret en entreprise :}
+\begin{itemize}
+  \item Mise en place d’un \textit{helpdesk} centralisé pour gérer les incidents utilisateurs.
+  \item Processus structuré de gestion des changements afin de réduire les risques lors des mises en production.
+  \item Suivi des SLA (Service Level Agreements) pour mesurer la qualité des services fournis.
+\end{itemize}
+
+\medskip
+\textbf{Avantage :} ITIL n’est pas une norme mais un \textit{référentiel de bonnes pratiques} : 
+chaque organisation peut l’adapter à son contexte pour structurer son service informatique et créer de la valeur.
+\end{tcolorbox}
+
+
+
+
+\end{document}
