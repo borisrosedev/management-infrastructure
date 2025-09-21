@@ -1,0 +1,226 @@
+\documentclass[12pt,a4paper]{report}
+
+% Marges
+\usepackage[a4paper,margin=1.5cm]{geometry}
+
+% Couleurs et encadrés
+\usepackage[most]{tcolorbox}
+\tcbset{colback=gray!5!white,colframe=black!75!black,arc=3mm,boxrule=0.8pt}
+
+% Encodage et langue
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% Mathématiques
+\usepackage{amsmath,amssymb}
+
+\begin{document}
+
+\chapter{Notions mathématiques pour la gestion budgétaire du parc informatique}
+
+\begin{tcolorbox}[title={Objectif du chapitre}]
+Ce cours présente les \textbf{outils mathématiques de base} nécessaires pour comprendre et appliquer la gestion budgétaire dans un contexte informatique :  
+calculs de coûts, amortissement, pourcentages, proportionnalité, analyse de rentabilité et retour sur investissement.
+\end{tcolorbox}
+
+\section*{Pourcentages et proportionnalité}
+
+\begin{tcolorbox}[title={Définition}]
+Un \textbf{pourcentage} exprime une proportion d’une quantité par rapport à un total, sur une base de 100.
+\[
+\text{Pourcentage} = \frac{\text{partie}}{\text{total}} \times 100
+\]
+\end{tcolorbox}
+
+\textbf{Exemple} :  
+Un budget IT de 80 000 € inclut 20 000 € pour le matériel.  
+\[
+\frac{20\,000}{80\,000} \times 100 = 25\% \quad \Rightarrow \quad 25\% \hspace{0.5cm}  \text{du budget est consacré au matériel}Ò.
+\]
+
+\section*{Répartition budgétaire}
+
+\begin{tcolorbox}[title={Définition}]
+La \textbf{répartition budgétaire} permet de diviser un budget total en différentes catégories selon des pourcentages prédéfinis.
+\end{tcolorbox}
+
+\textbf{Exemple} :  
+Un budget de 100 000 € réparti ainsi :
+\begin{itemize}
+  \item 40\% matériel $\Rightarrow 40\,000$ €,
+  \item 30\% logiciels $\Rightarrow 30\,000$ €,
+  \item 20\% maintenance $\Rightarrow 20\,000$ €,
+  \item 10\% innovation $\Rightarrow 10\,000$ €.
+\end{itemize}
+
+\section*{Coût total de possession (TCO)}
+
+\begin{tcolorbox}[title={Définition}]
+Le \textbf{TCO (Total Cost of Ownership)} correspond à la somme des coûts directs et indirects liés à un actif informatique durant toute sa durée de vie.
+\[
+TCO = \text{Coût d’acquisition} + \text{Coût de maintenance} + \text{Coût de support} + \text{Coût d’énergie}
+\]
+\end{tcolorbox}
+
+\textbf{Exemple} :  
+Un serveur coûte 10 000 € à l’achat, 2 000 €/an de maintenance, 1 000 €/an d’énergie et dure 5 ans :
+\[
+TCO = 10\,000 + (2\,000 + 1\,000) \times 5 = 25\,000 \,€
+\]
+
+\section*{Amortissement linéaire}
+
+\begin{tcolorbox}[title={Définition}]
+L’\textbf{amortissement linéaire} répartit le coût d’un bien de manière égale sur sa durée d’utilisation.
+\[
+\text{Amortissement annuel} = \frac{\text{Valeur d’achat}}{\text{Durée de vie}}
+\]
+\end{tcolorbox}
+
+\textbf{Exemple} :  
+Un ordinateur de 1 200 € amorti sur 4 ans :
+\[
+\frac{1\,200}{4} = 300 \,€ \quad \text{par an.}
+\]
+
+\section*{Retour sur investissement (ROI)}
+
+\begin{tcolorbox}[title={Définition}]
+Le \textbf{ROI (Return On Investment)} mesure la rentabilité d’un projet :
+\[
+ROI = \frac{\text{Gain net généré par le projet}}{\text{Coût du projet}} \times 100
+\]
+\end{tcolorbox}
+
+\textbf{Exemple} :  
+Un nouvel outil de supervision coûte 20 000 € mais permet d’économiser 30 000 € en pannes évitées :
+\[
+ROI = \frac{30\,000 - 20\,000}{20\,000} \times 100 = 50\%
+\]
+
+\section*{Analyse comparative : CapEx vs OpEx}
+
+\begin{tcolorbox}[title={Définitions}]
+\begin{itemize}
+  \item \textbf{CapEx (Capital Expenditure)} : investissement à long terme (ex. achat d’un serveur).
+  \item \textbf{OpEx (Operational Expenditure)} : dépense de fonctionnement (ex. abonnement cloud mensuel).
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Exemple comparatif} :  
+\begin{itemize}
+  \item Achat d’un serveur : 15 000 € sur 5 ans.
+  \item Location cloud : 400 €/mois sur 5 ans = $400 \times 60 = 24\,000$ €.
+\end{itemize}
+
+\textbf{Analyse} : CapEx plus économique, mais OpEx plus flexible.
+
+
+\chapter{Exercices de mathématiques appliqués à la gestion budgétaire du parc informatique}
+
+\begin{tcolorbox}[title={Objectif}]
+Ces exercices permettent de mettre en pratique les notions vues dans le chapitre précédent : pourcentages, répartition budgétaire, TCO, amortissement et ROI.  
+Chaque exercice est suivi d’une correction détaillée.
+\end{tcolorbox}
+
+\section*{Exercice 1 : Pourcentages et répartition}
+Un budget informatique annuel est de 120 000 €.  
+Il est réparti ainsi :
+\begin{itemize}
+  \item 35\% pour le matériel,
+  \item 25\% pour les logiciels,
+  \item 30\% pour la maintenance,
+  \item 10\% pour l’innovation.
+\end{itemize}
+
+\textbf{Question} : Calculer les montants attribués à chaque poste.
+
+\begin{tcolorbox}[title={Correction}]
+\[
+\text{Matériel} = 120\,000 \times 0,35 = 42\,000 \,€
+\]
+\[
+\text{Logiciels} = 120\,000 \times 0,25 = 30\,000 \,€
+\]
+\[
+\text{Maintenance} = 120\,000 \times 0,30 = 36\,000 \,€
+\]
+\[
+\text{Innovation} = 120\,000 \times 0,10 = 12\,000 \,€
+\]
+\end{tcolorbox}
+
+\section*{Exercice 2 : Coût total de possession (TCO)}
+Un serveur coûte 8 000 € à l’achat.  
+Il génère 1 500 €/an de maintenance et 500 €/an d’électricité.  
+Sa durée de vie est de 4 ans.
+
+\textbf{Question} : Calculer son TCO.
+
+\begin{tcolorbox}[title={Correction}]
+\[
+TCO = \text{Coût d’achat} + (\text{Maintenance annuelle} + \text{Énergie annuelle}) \times \text{Durée}
+\]
+\[
+TCO = 8\,000 + (1\,500 + 500) \times 4
+\]
+\[
+TCO = 8\,000 + 8\,000 = 16\,000 \,€
+\]
+\end{tcolorbox}
+
+\section*{Exercice 3 : Amortissement linéaire}
+Un parc de 50 ordinateurs est acheté pour un coût total de 60 000 €.  
+La durée de vie prévue est de 5 ans.
+
+\textbf{Question} : Calculer l’amortissement annuel par ordinateur.
+
+\begin{tcolorbox}[title={Correction}]
+\[
+\text{Amortissement annuel (parc)} = \frac{60\,000}{5} = 12\,000 \,€ 
+\]
+\[
+\text{Amortissement annuel (par PC)} = \frac{12\,000}{50} = 240 \,€
+\]
+Chaque ordinateur est amorti à hauteur de 240 € par an.
+\end{tcolorbox}
+
+\section*{Exercice 4 : Retour sur investissement (ROI)}
+Une entreprise investit 25 000 € dans un outil de supervision.  
+Cet outil permet d’économiser 40 000 € par an en temps de panne évité.  
+
+\textbf{Question} : Calculer le ROI au bout d’un an.
+
+\begin{tcolorbox}[title={Correction}]
+\[
+ROI = \frac{\text{Gain net}}{\text{Coût}} \times 100
+\]
+\[
+ROI = \frac{40\,000 - 25\,000}{25\,000} \times 100 = \frac{15\,000}{25\,000} \times 100 = 60\%
+\]
+Le ROI est de 60\% la première année.
+\end{tcolorbox}
+
+\section*{Exercice 5 : CapEx vs OpEx}
+Deux options sont proposées pour une infrastructure informatique :
+\begin{itemize}
+  \item \textbf{Option A (CapEx)} : achat d’un serveur pour 20 000 €, durée de vie 5 ans.
+  \item \textbf{Option B (OpEx)} : location cloud à 500 €/mois pendant 5 ans.
+\end{itemize}
+
+\textbf{Question} : Comparer les coûts totaux et déterminer la solution la plus économique.
+
+\begin{tcolorbox}[title={Correction}]
+\[
+\text{Option A} = 20\,000 \,€
+\]
+\[
+\text{Option B} = 500 \times 12 \times 5 = 30\,000 \,€
+\]
+\textbf{Analyse} :  
+CapEx (20 000 €) est moins coûteux qu’OpEx (30 000 €) sur 5 ans, mais OpEx offre plus de flexibilité.
+\end{tcolorbox}
+
+
+\end{document}
