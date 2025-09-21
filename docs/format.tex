@@ -1,0 +1,176 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Encodage & polices ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+% --- Mise en page ---
+\usepackage[margin=2.5cm]{geometry}
+
+% --- Couleurs et hyperliens ---
+\usepackage{xcolor}
+\definecolor{linkcolor}{HTML}{0A66C2}
+\usepackage[colorlinks=true,linkcolor=linkcolor,urlcolor=linkcolor,citecolor=linkcolor]{hyperref}
+
+% --- Listings pour le code ---
+\usepackage{listings}
+\lstdefinelanguage{bash}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{teal!70!black},
+}
+
+% --- Listes compactes ---
+\usepackage{enumitem}
+\setlist[itemize]{nosep,left=0pt..1.5em}
+\setlist[enumerate]{nosep,left=0pt..1.5em}
+
+\title{Tout savoir sur les spécificateurs de format en \texttt{printf} (\%b, \%s, etc.)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+Dans le shell Bash (et en C également), la commande \texttt{printf} utilise des \emph{spécificateurs de format}. Ceux-ci permettent de contrôler la manière dont les valeurs sont interprétées et affichées. Les plus courants sont \texttt{\%s}, \texttt{\%d}, \texttt{\%f}, \texttt{\%x}, \texttt{\%o}, et, dans le cas de Bash, un très utile : \texttt{\%b}. 
+
+Nous allons détailler chacun de ces spécificateurs, avec explications et exemples.
+
+\section*{\%s : Chaîne de caractères}
+\begin{itemize}
+  \item Affiche la valeur comme une \textbf{chaîne brute}.
+  \item Si la chaîne contient des séquences comme \texttt{\textbackslash n} ou \texttt{\textbackslash t}, elles \emph{ne sont pas interprétées}.
+\end{itemize}
+
+\textbf{Exemple :}
+\begin{lstlisting}
+printf "%s\n" "Bonjour\nMonde"
+\end{lstlisting}
+
+\textbf{Sortie :}
+\begin{verbatim}
+Bonjour\nMonde
+\end{verbatim}
+
+Ici, les caractères \verb|\n| restent littéraux.
+
+\section*{\%b : Chaîne avec interprétation des échappements}
+\begin{itemize}
+  \item Identique à \texttt{\%s}, mais interprète les séquences d’échappement du style C.
+  \item Séquences courantes :
+  \begin{itemize}
+    \item \verb|\n| : retour à la ligne
+    \item \verb|\t| : tabulation
+    \item \verb|\033| ou \verb|\e| : caractère ESC (utile pour les couleurs ANSI)
+    \item \verb|\\| : un antislash littéral
+  \end{itemize}
+\end{itemize}
+
+\textbf{Exemple :}
+\begin{lstlisting}
+printf "%b\n" "Bonjour\nMonde"
+\end{lstlisting}
+
+\textbf{Sortie :}
+\begin{verbatim}
+Bonjour
+Monde
+\end{verbatim}
+
+\section*{Comparaison directe}
+\begin{lstlisting}
+printf "%s\n" "Texte\nAvec\nSauts"
+# Affiche : Texte\nAvec\nSauts
+
+printf "%b\n" "Texte\nAvec\nSauts"
+# Affiche :
+# Texte
+# Avec
+# Sauts
+\end{lstlisting}
+
+\section*{Autres spécificateurs utiles}
+\begin{itemize}
+  \item \texttt{\%d} : entier décimal
+  \item \texttt{\%f} : flottant
+  \item \texttt{\%x} : entier en hexadécimal
+  \item \texttt{\%o} : entier en octal
+  \item \texttt{\%c} : caractère unique (correspondant au code ASCII)
+\end{itemize}
+
+\textbf{Exemple numérique :}
+\begin{lstlisting}
+printf "Décimal : %d, Hexa : %x, Octal : %o\n" 65 65 65
+\end{lstlisting}
+
+\textbf{Sortie :}
+\begin{verbatim}
+Décimal : 65, Hexa : 41, Octal : 101
+\end{verbatim}
+
+\section*{Largeur et alignement}
+\begin{itemize}
+  \item \texttt{\%10s} : chaîne alignée à droite dans un champ de 10 caractères.
+  \item \texttt{\%-10s} : chaîne alignée à gauche.
+  \item \texttt{\%05d} : entier avec remplissage de zéros sur 5 chiffres.
+\end{itemize}
+
+\textbf{Exemple :}
+\begin{lstlisting}
+printf "|%10s|\n" "abc"
+printf "|%-10s|\n" "abc"
+printf "|%05d|\n" 42
+\end{lstlisting}
+
+\textbf{Sortie :}
+\begin{verbatim}
+|       abc|
+|abc       |
+|00042|
+\end{verbatim}
+
+\section*{Applications pratiques de \%b}
+\begin{itemize}
+  \item Affichage coloré (séquences ANSI) :
+\begin{lstlisting}
+RED=$'\033[1;31m'
+NC=$'\033[0m'
+printf "%b\n" "${RED}Texte rouge${NC}"
+\end{lstlisting}
+
+  \item Multi-lignes intégrées :
+\begin{lstlisting}
+printf "%b" "Ligne1\nLigne2\n"
+\end{lstlisting}
+
+\end{itemize}
+
+\section*{Résumé}
+\begin{itemize}
+  \item \textbf{\%s} : affiche une chaîne littérale.
+  \item \textbf{\%b} : affiche une chaîne en interprétant les séquences d’échappement.
+  \item Autres spécificateurs (\%d, \%f, \%x, etc.) permettent un contrôle fin sur la présentation des nombres et chaînes.
+  \item On peut combiner les options (largeur, alignement, remplissage).
+\end{itemize}
+
+\end{document}

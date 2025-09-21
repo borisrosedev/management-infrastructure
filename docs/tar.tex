@@ -1,0 +1,57 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[margin=1.5cm]{geometry}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{black!5},
+  frame=single,
+  breaklines=true
+}
+
+\begin{document}
+
+\section*{Cours sur \texttt{tar}}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!75!black,title={Introduction}]
+\texttt{tar} (Tape Archive) est un utilitaire Unix permettant de créer et manipuler des archives. 
+Il est souvent combiné avec \texttt{gzip} ou \texttt{bzip2} pour la compression.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!75!black,title={Commandes principales}]
+\begin{itemize}
+  \item Créer une archive :
+  \begin{lstlisting}
+  tar -cvf archive.tar dossier/
+  \end{lstlisting}
+
+  \item Extraire une archive :
+  \begin{lstlisting}
+  tar -xvf archive.tar
+  \end{lstlisting}
+
+  \item Lister le contenu :
+  \begin{lstlisting}
+  tar -tvf archive.tar
+  \end{lstlisting}
+
+  \item Créer une archive compressée (gzip) :
+  \begin{lstlisting}
+  tar -czvf archive.tar.gz dossier/
+  \end{lstlisting}
+
+  \item Extraire une archive gzip :
+  \begin{lstlisting}
+  tar -xzvf archive.tar.gz
+  \end{lstlisting}
+
+  \item Créer une archive compressée (bzip2) :
+  \begin{lstlisting}
+  tar -cjvf archive.tar.bz2 dossier/
+  \end{lstlisting}
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

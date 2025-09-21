@@ -1,0 +1,61 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[margin=1.5cm]{geometry}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{black!5},
+  frame=single,
+  breaklines=true
+}
+
+\begin{document}
+
+\section*{Cours sur les Makefiles}
+
+\begin{tcolorbox}[colback=red!5,colframe=red!75!black,title={Introduction}]
+Un \texttt{Makefile} est un fichier contenant des règles pour automatiser des tâches, notamment la compilation de programmes C/C++.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5,colframe=red!75!black,title={Structure}]
+\begin{lstlisting}
+cible: dependances
+    commande
+\end{lstlisting}
+\end{tcolorbox}
+
+\tcolorbox[colback=red!5,colframe=red!75!black,title={Exemple pratique}]
+\begin{lstlisting}
+# Compilateur
+CC = gcc
+
+# Options
+CFLAGS = -Wall -g
+
+# Règle par défaut
+all: programme
+
+programme: main.o fonctions.o
+    $(CC) $(CFLAGS) -o programme main.o fonctions.o
+
+main.o: main.c fonctions.h
+    $(CC) $(CFLAGS) -c main.c
+
+fonctions.o: fonctions.c fonctions.h
+    $(CC) $(CFLAGS) -c fonctions.c
+
+clean:
+    rm -f *.o programme
+\end{lstlisting}
+
+\textbf{Explications :}
+\begin{itemize}
+  \item \texttt{all} construit le programme final.
+  \item Chaque fichier \texttt{.o} dépend de son \texttt{.c} et de ses headers.
+  \item \texttt{clean} supprime les fichiers temporaires.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

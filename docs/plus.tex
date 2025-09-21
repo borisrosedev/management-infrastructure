@@ -171,5 +171,77 @@ l’entreprise et ses prestataires ou services internes.
 
 
 
+\section*{La CMDB et son intégration avec GLPI}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!75!black,title={Définition}]
+La \textbf{CMDB} (Configuration Management DataBase) est une base de données qui centralise et organise les informations relatives aux \textbf{éléments de configuration (CI – Configuration Items)} d’un système d’information.
+
+Un \textbf{élément de configuration (CI)} peut être :
+\begin{itemize}
+  \item un serveur physique ou virtuel,
+  \item une application,
+  \item un service métier (ex : messagerie, ERP),
+  \item un équipement réseau (switch, routeur, firewall),
+  \item un poste utilisateur ou une imprimante,
+  \item un utilisateur ou un groupe.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!75!black,title={But de la CMDB}]
+\begin{itemize}
+  \item \textbf{Analyser l’impact d’une panne} : si un serveur tombe, savoir quels services et utilisateurs sont affectés.
+  \item \textbf{Mieux gérer les changements} : comprendre les dépendances avant de mettre à jour ou remplacer un composant.
+  \item \textbf{Assurer la traçabilité} : conserver l’historique des modifications sur les CI.
+  \item \textbf{Optimiser la gestion des actifs IT (ITAM)}.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!75!black,title={Liens entre les CI}]
+La force de la CMDB réside dans la capacité à \textbf{modéliser les relations} :
+\begin{itemize}
+  \item Service $\rightarrow$ Application $\rightarrow$ Serveur $\rightarrow$ Équipement réseau.
+  \item Utilisateur $\rightarrow$ Poste de travail $\rightarrow$ Applications utilisées.
+  \item Serveur $\rightarrow$ Dépendances avec d’autres serveurs (ex : base de données).
+\end{itemize}
+
+Ainsi, une panne d’un serveur de base de données permet immédiatement d’identifier les applications et utilisateurs impactés.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5,colframe=red!75!black,title={CMDB dans GLPI}]
+GLPI intègre une \textbf{CMDB complète}, accessible via le module « Gestion des éléments de configuration ».
+\begin{itemize}
+  \item Chaque matériel, logiciel, utilisateur est un CI.
+  \item Les relations entre CI peuvent être définies (\textit{ex. ce serveur héberge telle application, utilisée par tel service}).
+  \item La CMDB est intégrée avec l’\textbf{inventaire automatique} (FusionInventory ou OCS Inventory).
+  \item Elle alimente les processus ITIL : gestion des incidents, des problèmes, des changements.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=purple!5,colframe=purple!75!black,title={Exemple concret}]
+\begin{itemize}
+  \item Un serveur « \texttt{SRV-DB01} » héberge la base de données de l’application de facturation.
+  \item Cette application est utilisée par le service Comptabilité.
+  \item Si \texttt{SRV-DB01} tombe en panne :
+  \begin{itemize}
+    \item la CMDB montre immédiatement que « Application Facturation » est impactée,
+    \item et donc que le service Comptabilité est bloqué.
+  \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5,colframe=yellow!75!black,title={Avantages pour l’entreprise}]
+\begin{itemize}
+  \item Vision globale et centralisée du SI.
+  \item Aide à la décision avant un changement.
+  \item Réduction des risques et meilleure continuité de service.
+  \item Support aux bonnes pratiques ITIL.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}
+
+
+
+
 
 \end{document}

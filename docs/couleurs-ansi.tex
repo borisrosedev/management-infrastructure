@@ -1,0 +1,174 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Encodage & police ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+% --- Mise en page ---
+\usepackage[margin=2.5cm]{geometry}
+
+% --- Couleurs ---
+\usepackage{xcolor}
+
+% --- Listings pour le code ---
+\usepackage{listings}
+\lstdefinelanguage{bash}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{teal!70!black},
+}
+
+\title{Cours complet sur les couleurs ANSI dans le terminal}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section*{Introduction}
+Les couleurs ANSI (American National Standards Institute) sont des séquences d’échappement spéciales envoyées au terminal pour modifier son affichage. Elles permettent d’ajouter de la couleur, du gras, du souligné, et même de contrôler l’arrière-plan. Ce cours détaille leur fonctionnement et leur utilisation en Bash.
+
+\section{Structure d’une séquence ANSI}
+Une séquence ANSI est composée ainsi :
+\begin{verbatim}
+ESC[<codes>m
+\end{verbatim}
+
+\begin{itemize}
+  \item \textbf{ESC} est le caractère d’échappement (code ASCII 27, noté \verb|\033| ou \verb|\e| en Bash).
+  \item \textbf{[} indique le début de la séquence de contrôle.
+  \item \textbf{<codes>} sont un ou plusieurs nombres séparés par \verb|;|.
+  \item \textbf{m} indique que c’est une instruction graphique (SGR : \emph{Select Graphic Rendition}).
+\end{itemize}
+
+\textbf{Exemple :}
+\begin{lstlisting}
+printf "\033[31mTexte rouge\033[0m\n"
+\end{lstlisting}
+
+\section{Codes de base}
+\subsection*{Reset et styles}
+\begin{itemize}
+  \item \texttt{0} : reset (remet les couleurs par défaut).
+  \item \texttt{1} : gras.
+  \item \texttt{4} : souligné.
+  \item \texttt{7} : inversion (fond/texte inversés).
+\end{itemize}
+
+\subsection*{Couleurs du texte (30--37)}
+\begin{itemize}
+  \item \texttt{30} : noir
+  \item \texttt{31} : rouge
+  \item \texttt{32} : vert
+  \item \texttt{33} : jaune
+  \item \texttt{34} : bleu
+  \item \texttt{35} : magenta
+  \item \texttt{36} : cyan
+  \item \texttt{37} : blanc
+\end{itemize}
+
+\subsection*{Couleurs du fond (40--47)}
+Même logique mais ajoutées au fond :
+\begin{itemize}
+  \item \texttt{40} : fond noir
+  \item \texttt{41} : fond rouge
+  \item \texttt{42} : fond vert
+  \item \texttt{43} : fond jaune
+  \item \texttt{44} : fond bleu
+  \item \texttt{45} : fond magenta
+  \item \texttt{46} : fond cyan
+  \item \texttt{47} : fond blanc
+\end{itemize}
+
+\section{Exemples simples}
+\begin{lstlisting}
+# Texte rouge
+printf "\033[31mRouge\033[0m\n"
+
+# Texte rouge gras
+printf "\033[1;31mRouge gras\033[0m\n"
+
+# Texte jaune sur fond bleu
+printf "\033[33;44mJaune sur bleu\033[0m\n"
+\end{lstlisting}
+
+\section{Palette étendue (256 couleurs)}
+Les terminaux modernes supportent une palette de 256 couleurs.
+
+\subsection*{Syntaxe}
+\begin{itemize}
+  \item Texte : \verb|\033[38;5;<n>m|
+  \item Fond : \verb|\033[48;5;<n>m|
+\end{itemize}
+
+\subsection*{Exemple}
+\begin{lstlisting}
+for i in {0..15}; do
+  printf "\033[38;5;${i}mCouleur $i\033[0m\n"
+done
+\end{lstlisting}
+
+\section{Couleurs vraies (24-bit / 16M couleurs)}
+Certains terminaux (xterm, gnome-terminal, iTerm2, etc.) supportent le \emph{true color} :
+
+\begin{itemize}
+  \item Texte : \verb|\033[38;2;R;G;Bm|
+  \item Fond : \verb|\033[48;2;R;G;Bm|
+\end{itemize}
+
+\subsection*{Exemple}
+\begin{lstlisting}
+# Rouge vif en True Color
+printf "\033[38;2;255;0;0mTexte rouge vif\033[0m\n"
+\end{lstlisting}
+
+\section{Utilisation dans un script Bash}
+Il est courant de stocker les séquences dans des variables :
+
+\begin{lstlisting}
+RED=$'\033[1;31m'
+GREEN=$'\033[1;32m'
+NC=$'\033[0m' # No Color
+
+printf "%b\n" "${RED}Erreur : fichier manquant${NC}"
+printf "%b\n" "${GREEN}Succès${NC}"
+\end{lstlisting}
+
+\section{Bonnes pratiques}
+\begin{itemize}
+  \item Toujours terminer une couleur par \verb|\033[0m| pour éviter de polluer le reste du terminal.
+  \item Préférer \verb|printf "%b"| plutôt que \verb|echo -e| (plus portable).
+  \item Tester avec \verb|echo $TERM| pour s’assurer que le terminal supporte les séquences ANSI (ex. \texttt{xterm-256color}).
+  \item Éviter les couleurs dures pour l’accessibilité : prévoir du contraste.
+\end{itemize}
+
+\section*{Résumé}
+\begin{itemize}
+  \item Les couleurs ANSI sont basées sur des séquences d’échappement.
+  \item Codes de base : texte (30--37), fond (40--47), reset (0).
+  \item Styles supplémentaires : gras, souligné, inversé.
+  \item Extension : 256 couleurs (\verb|38;5;n|) et true color (\verb|38;2;R;G;B|).
+  \item Utilisation recommandée : via des variables dans des scripts Bash.
+\end{itemize}
+
+\end{document}

@@ -1,6 +1,7 @@
 **/*.log
 **/*.aux
 **/*.out 
+**/*.toc
 **/*_minted
 .DS_Store
 .vscode

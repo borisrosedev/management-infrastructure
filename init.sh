@@ -1,28 +1,49 @@
-#!/bin/bash 
+#!/usr/bin/env bash
+set -Eeuo pipefail
+IFS=$'\n\t'
 
-CYAN_COLOR="\033[1;36m"
-GREEN_COLOR="\033[1;32m"
-RED_COLOR="\033[1;31m"
-NO_COLOR="\033[0m"
+WORKING_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-#shellcheck disable=all
+# shellcheck source=./constants.sh
+if [[ -f "$WORKING_DIR/constants.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "$WORKING_DIR/constants.sh"
+else
+  CYAN_COLOR=""
+  RED_COLOR=""
+  NO_COLOR=""
+fi
 
-
-function search_mtime {
-    echo -e "🚀$CYAN_COLOR searching files edited within 24h :  $NO_COLOR"
-    find . -mtime -1
+search_mtime() {
+    printf "🚀%b searching files edited within 24h : %b\n" "${CYAN_COLOR:-}" "${NO_COLOR:-}"
+    find . -type f -mtime -1 -print
 }
 
-function find_suspects {
-    echo -e "🚀$RED_COLOR searching suspect files with $1 extension :  $NO_COLOR"
-    find ./ -name "*.$1" -exec grep "malware" {} \;
-    find ./ -name "*.$1" -exec grep "virus" {} \;
-    find ./ -name "*.$1" -exec grep "worm" {} \;
+find_suspects() {
+    local ext=${1:-}
+    if [[ -z "$ext" ]]; then
+        printf "Usage: %s <extension>\n" "${FUNCNAME[0]}"
+        return 2
+    fi
+    printf "🚀%b searching suspect files with .%s extension : %b\n" "${RED_COLOR:-}" "$ext" "${NO_COLOR:-}"
+    find . -type f -iname "*.${ext}" -print0 \
+      | xargs -0 -r grep -HnEI -- 'malware|virus|worm' || true
+}
+
+search_for_type() {
+    local ext=${1:-}
+    if [[ -z "$ext" ]]; then
+        printf "Usage: %s <extension>\n" "${FUNCNAME[0]}"
+        return 2
+    fi
+    printf "🚀search for type => %s :\n" "$ext"
+    find . -type f -iname "*.${ext}"
 }
 
 
-function search_for_type {
-    echo "🚀search for type => $1 : "
-    find . -type f -name "*.$1"
-}
-
+case "${1:-}" in
+  mtime)        search_mtime ;;
+  suspects)     shift; find_suspects "${1:-}" ;;
+  type)         shift; search_for_type "${1:-}" ;;
+  *)            printf "Usage: %s {mtime|suspects <ext>|type <ext>}\n" "$0"; exit 1 ;;
+esac
