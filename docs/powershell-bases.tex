@@ -1,0 +1,691 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\geometry{margin=2cm}
+
+\title{Cours complet de PowerShell pour l'administration Windows}
+\author{Formation en scripting et automatisation}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ======================
+\section{Introduction}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Pourquoi PowerShell ?]
+PowerShell est le langage de scripting et la console d’administration de Microsoft.  
+Il permet :
+\begin{itemize}
+  \item d’automatiser les tâches d’administration système ;
+  \item de gérer Active Directory, BitLocker, GPO, services, fichiers, etc. ;
+  \item de travailler avec des objets (contrairement aux simples lignes de texte de CMD).
+\end{itemize}
+\end{tcolorbox}
+
+---
+
+\section{Bases de PowerShell}
+\subsection{Variables et types de données}
+\begin{verbatim}
+$nom = "Alice"
+$age = 25
+$estAdmin = $true
+Write-Output "Utilisateur : $nom"
+\end{verbatim}
+
+\subsection{Opérateurs utiles}
+\begin{itemize}
+  \item Arithmétiques : \texttt{+ - * / \%}
+  \item Comparaison : \texttt{-eq, -ne, -lt, -gt, -like}
+  \item Logiques : \texttt{-and, -or, -not}
+\end{itemize}
+
+\subsection{Conditions}
+\begin{verbatim}
+if ($age -ge 18) {
+   Write-Output "Majeur"
+} else {
+   Write-Output "Mineur"
+}
+\end{verbatim}
+
+\subsection{Boucles}
+\begin{verbatim}
+$users = @("Alice","Bob","Claire")
+foreach ($u in $users) {
+   Write-Output "Utilisateur : $u"
+}
+\end{verbatim}
+
+\subsection{Fonctions}
+\begin{verbatim}
+function Afficher-Message($texte) {
+   Write-Output "Message : $texte"
+}
+Afficher-Message "Bonjour le monde"
+\end{verbatim}
+
+---
+
+\section{Gestion des fichiers et dossiers}
+\subsection{Lister et créer des fichiers}
+\begin{verbatim}
+# Lister fichiers d’un dossier
+Get-ChildItem C:\Users
+
+# Créer un fichier
+"Bonjour" | Out-File "C:\Temp\test.txt"
+\end{verbatim}
+
+\subsection{Lire un fichier}
+\begin{verbatim}
+$contenu = Get-Content "C:\Temp\test.txt"
+Write-Output $contenu
+\end{verbatim}
+
+---
+
+\section{Administration Windows avec PowerShell}
+\subsection{Services}
+\begin{verbatim}
+Get-Service
+Restart-Service Spooler
+\end{verbatim}
+
+\subsection{Utilisateurs locaux}
+\begin{verbatim}
+New-LocalUser "testuser" -Password (Read-Host -AsSecureString "Password")
+\end{verbatim}
+
+\subsection{Active Directory (AD)}
+\begin{verbatim}
+# Nécessite module ActiveDirectory
+Get-ADUser -Filter * | Select-Object Name, Enabled
+\end{verbatim}
+
+---
+
+\section{BitLocker avec PowerShell}
+\subsection{Vérifier l’état}
+\begin{verbatim}
+Get-BitLockerVolume | Select-Object MountPoint, ProtectionStatus
+\end{verbatim}
+
+\subsection{Activer le chiffrement}
+\begin{verbatim}
+Enable-BitLocker -MountPoint "C:" -EncryptionMethod XtsAes256 -UsedSpaceOnly `
+  -TpmProtector
+\end{verbatim}
+
+\subsection{Récupération des clés}
+\begin{verbatim}
+(Get-BitLockerVolume -MountPoint "C:").KeyProtector
+\end{verbatim}
+
+---
+
+\section{TP pratiques}
+\subsection{TP1 — Inventaire des utilisateurs locaux}
+\begin{itemize}
+  \item Écrire un script qui liste les utilisateurs locaux et exporte la liste dans un fichier texte.
+\end{itemize}
+
+\subsection{TP2 — Vérification BitLocker}
+\begin{itemize}
+  \item Écrire un script qui affiche pour chaque volume : lettre de lecteur, état de protection et méthode de chiffrement.
+\end{itemize}
+
+\subsection{TP3 — Supervision de services}
+\begin{itemize}
+  \item Écrire un script qui vérifie si le service \texttt{Spooler} est démarré, sinon le redémarre et écrit un log.
+\end{itemize}
+
+---
+
+
+\section{Gestion avancée d’Active Directory}
+\subsection{Lister les utilisateurs AD}
+\begin{verbatim}
+# Nécessite RSAT et module ActiveDirectory
+Import-Module ActiveDirectory
+Get-ADUser -Filter * | Select-Object Name, SamAccountName, Enabled
+\end{verbatim}
+
+\subsection{Créer un utilisateur AD}
+\begin{verbatim}
+New-ADUser -Name "Jean Dupont" -SamAccountName jdupont `
+ -UserPrincipalName jdupont@entreprise.local -Path "OU=Utilisateurs,DC=entreprise,DC=local" `
+ -AccountPassword (Read-Host -AsSecureString "Mot de passe") -Enabled $true
+\end{verbatim}
+
+\subsection{Ajouter un utilisateur à un groupe}
+\begin{verbatim}
+Add-ADGroupMember -Identity "Admins" -Members jdupont
+\end{verbatim}
+
+\subsection{Lister les machines du domaine}
+\begin{verbatim}
+Get-ADComputer -Filter * | Select-Object Name, Enabled
+\end{verbatim}
+
+---
+
+\section{Gestion des GPO avec PowerShell}
+\subsection{Lister les GPO existantes}
+\begin{verbatim}
+Import-Module GroupPolicy
+Get-GPO -All
+\end{verbatim}
+
+\subsection{Créer une nouvelle GPO}
+\begin{verbatim}
+New-GPO -Name "GPO_Secu_BitLocker" -Comment "Active BitLocker sur postes du domaine"
+\end{verbatim}
+
+\subsection{Lier une GPO à une OU}
+\begin{verbatim}
+New-GPLink -Name "GPO_Secu_BitLocker" -Target "OU=Postes,DC=entreprise,DC=local"
+\end{verbatim}
+
+\subsection{Sauvegarder et restaurer une GPO}
+\begin{verbatim}
+# Sauvegarde
+Backup-GPO -Name "GPO_Secu_BitLocker" -Path "C:\Backup\GPOs"
+
+# Restauration
+Restore-GPO -Name "GPO_Secu_BitLocker" -Path "C:\Backup\GPOs"
+\end{verbatim}
+
+---
+
+\section{Logs et supervision avec PowerShell}
+\subsection{Lire le journal des événements}
+\begin{verbatim}
+Get-EventLog -LogName System -Newest 10
+\end{verbatim}
+
+\subsection{Filtrer les événements critiques}
+\begin{verbatim}
+Get-EventLog -LogName Application -EntryType Error -Newest 20
+\end{verbatim}
+
+\subsection{Supervision continue}
+\begin{verbatim}
+# Surveiller les erreurs système toutes les 10 secondes
+while ($true) {
+   Get-EventLog -LogName System -EntryType Error -Newest 1
+   Start-Sleep -Seconds 10
+}
+\end{verbatim}
+
+\subsection{Exporter les logs en CSV}
+\begin{verbatim}
+Get-EventLog -LogName Security -Newest 50 | Export-Csv "C:\Logs\Security.csv" -NoTypeInformation
+\end{verbatim}
+
+---
+
+\section{Sécurité avancée avec PowerShell}
+\subsection{BitLocker — rappel rapide}
+\begin{verbatim}
+Get-BitLockerVolume | Select-Object MountPoint, ProtectionStatus, EncryptionMethod
+\end{verbatim}
+
+\subsection{Permissions NTFS}
+\begin{verbatim}
+# Vérifier les permissions d’un dossier
+Get-Acl "C:\Data"
+
+# Modifier les permissions
+$acl = Get-Acl "C:\Data"
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Utilisateurs","ReadAndExecute","Allow")
+$acl.SetAccessRule($rule)
+Set-Acl "C:\Data" $acl
+\end{verbatim}
+
+\subsection{Auditer les comptes administrateurs}
+\begin{verbatim}
+Get-LocalGroupMember -Group "Administrateurs"
+\end{verbatim}
+
+---
+
+\section{TP pratiques avancés}
+\subsection{TP4 — Création d’un utilisateur AD avec GPO BitLocker}
+\begin{itemize}
+  \item Créez un utilisateur AD nommé \texttt{testgpo}.
+  \item Ajoutez-le à un groupe \texttt{Secu-BitLocker}.
+  \item Créez une GPO qui applique BitLocker uniquement aux machines de ce groupe.
+\end{itemize}
+
+\subsection{TP5 — Supervision de logs Windows}
+\begin{itemize}
+  \item Écrire un script qui enregistre toutes les erreurs du journal \texttt{System} dans un fichier \texttt{C:\Logs\system\_erreurs.txt}.
+  \item Le script doit s’exécuter en boucle toutes les 30 secondes.
+\end{itemize}
+
+\subsection{TP6 — Audit sécurité}
+\begin{itemize}
+  \item Écrire un script qui liste :
+  \begin{itemize}
+    \item Les utilisateurs AD désactivés.
+    \item Les membres du groupe Administrateurs locaux de chaque poste.
+    \item Les 20 dernières erreurs du journal Sécurité.
+  \end{itemize}
+  \item Exporter les résultats en CSV pour reporting.
+\end{itemize}
+
+---
+
+\section{Conclusion}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+Avec ce module enrichi, vous maîtrisez :
+\begin{itemize}
+  \item La gestion Active Directory via PowerShell.
+  \item La manipulation et l’automatisation des GPO.
+  \item L’exploitation des journaux Windows pour supervision et audit.
+  \item Des scripts de sécurité pour BitLocker et permissions NTFS.
+\end{itemize}
+Ces connaissances vous permettent d’être autonome pour écrire des scripts professionnels de gestion et de sécurité Windows.
+\end{tcolorbox}
+
+
+
+---
+
+\section{Rappels essentiels}
+\begin{itemize}
+  \item Variables, conditions, boucles.
+  \item Gestion des fichiers et services.
+  \item Cmdlets principales : \texttt{Get-}, \texttt{Set-}, \texttt{New-}, \texttt{Remove-}.
+\end{itemize}
+
+---
+
+\section{Active Directory et GPO}
+\subsection{Lister et gérer les utilisateurs}
+\begin{verbatim}
+Get-ADUser -Filter * | Select-Object Name, Enabled
+New-ADUser -Name "Jean Dupont" -SamAccountName jdupont `
+ -AccountPassword (Read-Host -AsSecureString) -Enabled $true
+\end{verbatim}
+
+\subsection{Créer et lier une GPO}
+\begin{verbatim}
+New-GPO -Name "GPO_Secu_BitLocker"
+New-GPLink -Name "GPO_Secu_BitLocker" -Target "OU=Postes,DC=entreprise,DC=local"
+\end{verbatim}
+
+---
+
+\section{Logs et supervision}
+\subsection{Lire et exporter les événements}
+\begin{verbatim}
+Get-EventLog -LogName System -Newest 20
+Get-EventLog -LogName Security -Newest 50 | Export-Csv "C:\Logs\Security.csv"
+\end{verbatim}
+
+\subsection{Supervision en boucle}
+\begin{verbatim}
+while ($true) {
+   Get-EventLog -LogName System -EntryType Error -Newest 1
+   Start-Sleep -Seconds 30
+}
+\end{verbatim}
+
+---
+
+\section{Sécurité avancée}
+\subsection{BitLocker}
+\begin{verbatim}
+Get-BitLockerVolume | Select-Object MountPoint, ProtectionStatus, EncryptionMethod
+Enable-BitLocker -MountPoint "C:" -TpmProtector -UsedSpaceOnly -EncryptionMethod XtsAes256
+\end{verbatim}
+
+\subsection{Permissions NTFS}
+\begin{verbatim}
+$acl = Get-Acl "C:\Data"
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Utilisateurs","ReadAndExecute","Allow")
+$acl.SetAccessRule($rule)
+Set-Acl "C:\Data" $acl
+\end{verbatim}
+
+---
+
+\section{Administration distante avec PowerShell}
+\subsection{Activation de WinRM (sur cible)}
+\begin{verbatim}
+Enable-PSRemoting -Force
+\end{verbatim}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!60!black]
+Cette commande configure le service \textbf{WinRM} (Windows Remote Management), ouvre le firewall et permet d’utiliser PowerShell à distance.
+\end{tcolorbox}
+
+\subsection{Exécution d’une commande distante}
+\begin{verbatim}
+Invoke-Command -ComputerName SRV01 -ScriptBlock { Get-Service }
+\end{verbatim}
+
+\subsection{Connexion interactive distante}
+\begin{verbatim}
+Enter-PSSession -ComputerName SRV01 -Credential domaine\admin
+\end{verbatim}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!60!black]
+Cette commande ouvre une session interactive PowerShell sur le serveur \texttt{SRV01}.
+\end{tcolorbox}
+
+\subsection{Scripts multi-serveurs}
+\begin{verbatim}
+$servers = @("SRV01","SRV02","SRV03")
+Invoke-Command -ComputerName $servers -ScriptBlock {
+    Get-Service -Name Spooler
+}
+\end{verbatim}
+
+\subsection{Exécution parallèle avec \texttt{Invoke-Command}}
+\begin{verbatim}
+Invoke-Command -ComputerName $servers -ScriptBlock {
+    Get-EventLog -LogName System -Newest 5
+} -AsJob
+\end{verbatim}
+
+\subsection{Utilisation de fichiers d’inventaire}
+\begin{verbatim}
+# Lire une liste de serveurs depuis un fichier
+$servers = Get-Content "C:\Scripts\serveurs.txt"
+
+# Vérifier l’espace disque à distance
+Invoke-Command -ComputerName $servers -ScriptBlock {
+    Get-PSDrive C
+}
+\end{verbatim}
+
+---
+
+\section{TP pratiques administration distante}
+\subsection{TP7 — Vérification de services sur plusieurs serveurs}
+\begin{itemize}
+  \item Créez une liste de serveurs dans \texttt{serveurs.txt}.
+  \item Écrire un script qui affiche l’état du service \texttt{Spooler} sur chaque serveur.
+\end{itemize}
+
+\subsection{TP8 — Audit espace disque distant}
+\begin{itemize}
+  \item Sur plusieurs serveurs, collectez l’espace libre du disque \texttt{C:}.
+  \item Exportez les résultats dans un CSV.
+\end{itemize}
+
+\subsection{TP9 — Supervision centralisée}
+\begin{itemize}
+  \item Utiliser \texttt{Invoke-Command} pour récupérer les 10 derniers événements critiques du journal Système sur tous les serveurs.
+  \item Générer un rapport consolidé.
+\end{itemize}
+
+---
+
+\section{Conclusion}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+À présent, vous maîtrisez :
+\begin{itemize}
+  \item La gestion locale et distante des systèmes Windows via PowerShell.
+  \item Active Directory et GPO en ligne de commande.
+  \item L’automatisation de la supervision et de la sécurité.
+  \item L’administration multi-serveurs grâce à WinRM et PowerShell Remoting.
+\end{itemize}
+Ces compétences vous permettent d’automatiser entièrement la gestion d’un parc Windows en environnement professionnel.
+\end{tcolorbox}
+
+% ====== À INSÉRER DANS LE COURS POWERSHELL : GESTION D'API REST ======
+
+\section{Gestion d’API REST en PowerShell}
+\label{sec:ps-rest}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Objectifs]
+À la fin de cette section, vous saurez :
+\begin{itemize}
+  \item Interroger des API REST avec \texttt{Invoke-RestMethod} et \texttt{Invoke-WebRequest}.
+  \item Gérer l’authentification (Basic, Bearer/OAuth2), les en-têtes et le JSON.
+  \item Traiter la pagination, les erreurs, la limitation de débit (429) et les reprises.
+  \item Envoyer des données (POST, PATCH, PUT, DELETE), y compris multipart/form-data.
+  \item Télécharger / téléverser des fichiers via HTTP(S).
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Cmdlets principales}
+\begin{itemize}
+  \item \textbf{Invoke-RestMethod (IRM)} : JSON $\leftrightarrow$ objets PowerShell, idéal pour API REST.
+  \item \textbf{Invoke-WebRequest (IWR)} : accès bas niveau (en-têtes complets, contenu brut), utile pour téléchargements.
+\end{itemize}
+
+\subsection{Requêtes simples (GET)}
+\begin{verbatim}
+# GET JSON --> objets PowerShell
+$resp = Invoke-RestMethod -Uri "https://api.example.com/v1/items"
+$resp.items | Select-Object id, name, createdAt
+\end{verbatim}
+
+\subsection{En-têtes et query string}
+\begin{verbatim}
+$headers = @{ "X-Api-Key" = "VOTRE_CLE_API"; "Accept" = "application/json" }
+$params  = @{ category = "servers"; limit = 50 }
+$uri     = "https://api.example.com/v1/assets"
+
+$resp = Invoke-RestMethod -Uri $uri -Headers $headers -Body $params -Method Get
+\end{verbatim}
+
+\subsection{Envoi de données JSON (POST / PATCH)}
+\begin{verbatim}
+$payload = @{
+  name = "SRV-PROD-01"
+  role = "web"
+  tags = @("prod","frontend")
+} | ConvertTo-Json -Depth 5
+
+$headers = @{
+  "Authorization" = "Bearer VOTRE_JETON"
+  "Content-Type"  = "application/json"
+}
+
+$resp = Invoke-RestMethod -Uri "https://api.example.com/v1/servers" `
+  -Method Post -Headers $headers -Body $payload
+\end{verbatim}
+
+\subsection{Authentification}
+\paragraph{Basic Auth}
+\begin{verbatim}
+$pair    = "user:motdepasse"
+$b64     = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($pair))
+$headers = @{ Authorization = "Basic $b64" }
+Invoke-RestMethod -Uri $uri -Headers $headers
+\end{verbatim}
+
+\paragraph{Bearer / OAuth2 (flux client credentials)}
+\begin{verbatim}
+$tokenResp = Invoke-RestMethod -Method Post -Uri "https://login.example.com/oauth2/token" `
+  -Body @{
+    client_id     = "VOTRE_CLIENT_ID"
+    client_secret = "VOTRE_SECRET"
+    grant_type    = "client_credentials"
+    scope         = "api.read api.write"
+  }
+$headers = @{ Authorization = "Bearer " + $tokenResp.access_token }
+Invoke-RestMethod -Uri "https://api.example.com/v1/me" -Headers $headers
+\end{verbatim}
+
+\subsection{Pagination}
+\paragraph{Pagination par page/offset}
+\begin{verbatim}
+$page = 1; $all = @()
+do {
+  $resp = Invoke-RestMethod -Uri "https://api.example.com/v1/items?page=$page&per_page=100"
+  $all  += $resp.items
+  $page++
+} while ($resp.items.Count -gt 0)
+\end{verbatim}
+
+\paragraph{Pagination par lien \texttt{next}}
+\begin{verbatim}
+$uri = "https://api.example.com/v1/items"
+$all = @()
+while ($uri) {
+  $r    = Invoke-WebRequest -Uri $uri -Headers $headers
+  $json = $r.Content | ConvertFrom-Json
+  $all += $json.items
+  # Exemple: Link: <https://.../items?page=3>; rel="next"
+  $next = $r.Headers.Link -match 'rel="next"' ? ($r.Headers.Link -split ';')[0] : $null
+  $uri  = $next -replace '[<> ]',''
+}
+\end{verbatim}
+
+\subsection{Gestion d’erreurs \& reprise (429/5xx) avec backoff}
+\begin{verbatim}
+function Invoke-RestSafe {
+  param(
+    [Parameter(Mandatory)] [string]$Uri,
+    [ValidateSet('Get','Post','Put','Patch','Delete')] [string]$Method = 'Get',
+    [hashtable]$Headers, $Body, [int]$MaxRetry = 5
+  )
+  $delay = 1
+  for ($i=1; $i -le $MaxRetry; $i++) {
+    try {
+      return Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Headers -Body $Body `
+             -ContentType ($Headers['Content-Type'] ?? 'application/json')
+    } catch {
+      $status = $_.Exception.Response.StatusCode.value__
+      if ($status -eq 429 -or ($status -ge 500 -and $status -lt 600)) {
+        $retryAfter = $_.Exception.Response.Headers['Retry-After']
+        $sleep = [int]($retryAfter ? $retryAfter : $delay)
+        Start-Sleep -Seconds $sleep
+        $delay = [Math]::Min($delay * 2, 60)
+      } else { throw }
+    }
+  }
+  throw "Échec après $MaxRetry tentatives: $Uri"
+}
+\end{verbatim}
+
+\subsection{Téléchargements / uploads}
+\paragraph{Télécharger un fichier}
+\begin{verbatim}
+Invoke-WebRequest -Uri "https://example.com/report.pdf" -OutFile "C:\Temp\report.pdf"
+\end{verbatim}
+
+\paragraph{Upload multipart/form-data}
+\begin{verbatim}
+# PowerShell 7+ : -Form
+$form = @{
+  "metadata" = '{"ticket":"INC123"}'
+  "file"     = Get-Item "C:\Temp\log.zip"
+}
+Invoke-WebRequest -Uri "https://api.example.com/v1/upload" -Method Post -Form $form -OutFile NUL
+\end{verbatim}
+
+\subsection{Cas pratiques (modèles)}
+\paragraph{GitHub API (GET publiques)}
+\begin{verbatim}
+$uri = "https://api.github.com/repos/microsoft/PowerShell/releases?per_page=5"
+$headers = @{ "User-Agent" = "PS-Training" ; "Accept" = "application/vnd.github+json" }
+$releases = Invoke-RestMethod -Uri $uri -Headers $headers
+$releases | Select-Object name, tag_name, published_at
+\end{verbatim}
+
+\paragraph{Microsoft Graph (liste des utilisateurs) — Application (client credentials)}
+\begin{verbatim}
+# 1) Récupérer le token (exemple Entra ID / MS Graph)
+$token = Invoke-RestMethod -Method Post `
+  -Uri "https://login.microsoftonline.com/VOTRE_TENANT_ID/oauth2/v2.0/token" `
+  -Body @{
+    client_id     = "VOTRE_CLIENT_ID"
+    client_secret = "VOTRE_SECRET"
+    scope         = "https://graph.microsoft.com/.default"
+    grant_type    = "client_credentials"
+  }
+
+# 2) Appeler Graph
+$h = @{ Authorization = "Bearer " + $token.access_token }
+$users = Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/users?$top=25" -Headers $h
+$users.value | Select-Object displayName, userPrincipalName, accountEnabled
+\end{verbatim}
+
+\subsection{Proxies, TLS et certificats}
+\begin{verbatim}
+# Utiliser un proxy
+[System.Net.WebRequest]::DefaultWebProxy = New-Object System.Net.WebProxy("http://proxy:3128")
+
+# Autoriser (temporairement) un certificat auto-signé (non recommandé en prod)
+add-type @"
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+public class TrustAllCertsPolicy : ICertificatePolicy {
+  public bool CheckValidationResult(ServicePoint srvPoint, X509Certificate certificate,
+    WebRequest request, int certificateProblem) { return true; }
+}
+"@
+[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+\end{verbatim}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!70!black]
+\textbf{Attention} : évitez de désactiver la validation TLS en production. Préférez déployer une AC interne et des certificats valides.
+\end{tcolorbox}
+
+\subsection{Structure recommandée (module REST)}
+\begin{verbatim}
+# Fichier: Company.ApiTools.psm1
+function New-ApiHeaders { param([string]$Token) @{ Authorization="Bearer $Token"; Accept="application/json" } }
+function Get-ApiPaged {
+  param([string]$BaseUri,[hashtable]$Headers)
+  $all=@(); $uri=$BaseUri
+  while ($uri) {
+    $r = Invoke-WebRequest -Uri $uri -Headers $Headers
+    $j = $r.Content | ConvertFrom-Json
+    $all += $j.value ?? $j.items
+    $uri = ($r.Headers.Link -match 'rel="next"') ? (($r.Headers.Link -split ';')[0] -replace '[<> ]','') : $null
+  }
+  return $all
+}
+Export-ModuleMember -Function *
+\end{verbatim}
+
+\subsection{TP pratiques REST}
+\subsubsection{TP14 — GET + filtrage + export}
+\begin{itemize}
+  \item Interrogez une API publique (ex. GitHub) pour récupérer les 50 derniers dépôts d’une organisation.
+  \item Filtrez les champs (nom, date de création, nombre d’étoiles) et exportez en CSV.
+\end{itemize}
+
+\subsubsection{TP15 — POST JSON avec reprise}
+\begin{itemize}
+  \item Créez un script qui crée un objet via \texttt{POST} sur une API de test (utilisez un bac à sable).
+  \item Intégrez \texttt{Invoke-RestSafe} pour gérer 429/5xx et journalisez les tentatives.
+\end{itemize}
+
+\subsubsection{TP16 — Pagination \& rapport}
+\begin{itemize}
+  \item Parcourez toutes les pages d’une API paginée et générez un rapport agrégé (compte par statut, top 10 par métrique).
+\end{itemize}
+
+\subsubsection{TP17 — Upload multipart et ticketing}
+\begin{itemize}
+  \item Envoyez un fichier log compressé (\texttt{.zip}) en multipart sur une API de ticketing (sandbox).
+  \item Vérifiez la réponse et extrayez l’ID du ticket créé.
+\end{itemize}
+
+\subsection{Bonnes pratiques REST}
+\begin{itemize}
+  \item Toujours définir \texttt{Accept} et \texttt{Content-Type} appropriés.
+  \item Utiliser \texttt{ConvertTo-Json -Depth N} (souvent $N\ge 5$) pour les payloads imbriqués.
+  \item Centraliser l’authentification et les en-têtes dans des fonctions utilitaires.
+  \item Gérer les erreurs avec \texttt{try/catch}, logs, et backoff exponentiel.
+  \item Ne jamais commiter de secrets : utiliser variables d’environnement, coffre-fort (ex. Windows Credential Manager, Azure Key Vault).
+\end{itemize}
+
+
+\end{document}
+
+
+

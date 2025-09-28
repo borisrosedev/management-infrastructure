@@ -1,0 +1,112 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\geometry{margin=2cm}
+
+\title{Cours sur les GPO (Group Policy Objects)}
+\author{Formation Administration Systèmes Windows}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section*{Introduction}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Définition]
+Les \textbf{Group Policy Objects (GPO)} sont des objets de stratégie de groupe utilisés dans un environnement Windows pour centraliser la gestion et la configuration des systèmes, utilisateurs et applications au sein d’un domaine Active Directory (AD).
+\end{tcolorbox}
+
+---
+
+\section{Concepts de base des GPO}
+\begin{tcolorbox}[colback=green!5!white,colframe=green!60!black,title=Composants fondamentaux]
+\begin{itemize}
+  \item \textbf{Active Directory (AD)} : service d'annuaire permettant de gérer les utilisateurs, ordinateurs et ressources.
+  \item \textbf{GPMC (Group Policy Management Console)} : outil principal pour créer et administrer les GPO.
+  \item \textbf{GPO} : conteneur regroupant un ensemble de règles appliquées aux utilisateurs ou ordinateurs.
+  \item \textbf{Lien} : un GPO est appliqué à un site, domaine ou unité d'organisation (OU).
+\end{itemize}
+\end{tcolorbox}
+
+---
+
+\section{Cycle de traitement des GPO}
+\begin{tcolorbox}[colback=orange!5!white,colframe=orange!80!black,title=Ordre d’application des stratégies]
+Les GPO sont appliquées dans un ordre précis :
+\begin{enumerate}
+  \item GPO locales (chaque machine possède une stratégie locale).
+  \item GPO liées aux \textbf{sites}.
+  \item GPO liées aux \textbf{domaines}.
+  \item GPO liées aux \textbf{unités d’organisation (OU)}, de l’OU parent vers l’OU enfant.
+\end{enumerate}
+
+Cet ordre est résumé par l’acronyme \textbf{LSDOU (Local, Site, Domain, OU)}.
+\end{tcolorbox}
+
+---
+
+\section{Types de paramètres dans les GPO}
+\begin{tcolorbox}[colback=purple!5!white,colframe=purple!70!black,title=Deux grandes catégories]
+\begin{itemize}
+  \item \textbf{Configuration ordinateur} : paramètres appliqués à la machine, indépendamment de l’utilisateur connecté (ex. mot de passe, services, mises à jour).
+  \item \textbf{Configuration utilisateur} : paramètres appliqués au profil utilisateur (ex. redirection de dossiers, scripts de connexion, restrictions logicielles).
+\end{itemize}
+\end{tcolorbox}
+
+---
+
+\section{Création et gestion d’une GPO}
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!60!black,title=Étapes principales]
+\begin{enumerate}
+  \item Ouvrir la console \textbf{GPMC}.
+  \item Créer une nouvelle \textbf{GPO}.
+  \item Configurer les paramètres désirés (sécurité, restrictions, scripts, etc.).
+  \item Lier la GPO à un domaine, site ou OU.
+  \item Forcer l’application avec la commande :
+  \begin{verbatim}
+  gpupdate /force
+  \end{verbatim}
+\end{enumerate}
+\end{tcolorbox}
+
+---
+
+\section{Scénarios pratiques d’utilisation}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!70!black,title=Exemples concrets]
+\begin{itemize}
+  \item \textbf{Sécurité} : imposer des mots de passe complexes et une durée d’expiration.
+  \item \textbf{Déploiement logiciel} : installation automatique d’applications.
+  \item \textbf{Environnement utilisateur} : définir un fond d’écran, rediriger les dossiers Documents, restreindre l’accès au panneau de configuration.
+  \item \textbf{Scripts} : lancer des scripts au démarrage/arrêt des ordinateurs ou à la connexion/déconnexion des utilisateurs.
+\end{itemize}
+\end{tcolorbox}
+
+---
+
+\section{Bonnes pratiques}
+\begin{tcolorbox}[colback=gray!5!white,colframe=gray!70!black,title=Recommandations d’administration]
+\begin{itemize}
+  \item Organiser les OU en fonction des rôles et départements.
+  \item Limiter le nombre de GPO appliquées à un objet pour réduire les conflits.
+  \item Utiliser la fonctionnalité de \textbf{filtrage de sécurité} pour appliquer une GPO uniquement à certains groupes.
+  \item Tester les GPO dans un environnement de préproduction.
+  \item Documenter chaque GPO (nom, objectif, date de création).
+\end{itemize}
+\end{tcolorbox}
+
+---
+
+\section*{Conclusion}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Résumé]
+Les GPO constituent un levier essentiel pour administrer efficacement un parc informatique sous Windows. Elles permettent une centralisation de la configuration et une meilleure sécurité, mais nécessitent une bonne planification et une gestion rigoureuse pour éviter les conflits et les surcharges.
+\end{tcolorbox}
+
+\end{document}
+Quis cillum non dolor id anim occaecat excepteur. Eu id nulla dolor officia velit pariatur. Eu amet sit exercitation labore sit ea dolor labore id sit dolore in dolore. Ad laboris eu eu magna dolor. Sunt irure dolor pariatur cillum eu. Velit cillum qui quis et mollit ullamco et ad dolor deserunt consequat. Proident voluptate voluptate labore sit Lorem sit qui.
