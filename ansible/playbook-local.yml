@@ -1,0 +1,16 @@
+---
+- name: Create 3 dirs and send a curl request 
+  hosts: local 
+  vars:
+    base_dir: "{{ ansible_env.HOME }}/Desktop/work/management-infrastructure"
+    dirs_to_create:
+      - notes
+      - archi
+      - errors
+  tasks:
+    - name: Create 3 dirs
+      file:
+        path: "{{ base_dir }}/{{ item }}"
+        mode: '0755'
+        state: directory
+      with_items: "{{ dirs_to_create }}"
