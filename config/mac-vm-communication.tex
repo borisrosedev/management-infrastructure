@@ -1,0 +1,162 @@
+
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Encodage & police ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{lmodern}
+\usepackage{url}
+
+
+% --- Mise en page ---
+\usepackage[margin=1.5cm]{geometry}
+
+% --- Couleurs ---
+\usepackage{xcolor}
+
+% --- Listings pour le code ---
+\usepackage{listings}
+\lstdefinelanguage{bash}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{teal!70!black},
+}
+
+\title{Mac et VM : Communication }
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+
+
+
+
+
+
+
+\section*{Cours : Communication entre un Mac (hôte) et une VM Ubuntu en mode Bridged}
+
+\tcbset{colback=orange!5!white,colframe=orange!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+Lorsqu’une machine virtuelle est configurée en mode \textbf{Bridged}, elle se comporte comme un ordinateur à part entière connecté au même réseau local que l’hôte (ici ton Mac).  
+Cela permet d’établir une communication directe entre le Mac et la VM Ubuntu, comme si deux ordinateurs distincts étaient branchés sur la même box ou le même switch.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Comprendre le mode Bridged}]
+\begin{itemize}
+  \item Le mode \textbf{NAT} isole la VM derrière l’hôte : elle accède à Internet, mais l’hôte et la VM ne communiquent pas directement.  
+  \item Le mode \textbf{Host-only} crée un réseau privé entre la VM et l’hôte, mais sans accès Internet.  
+  \item Le mode \textbf{Bridged} connecte la VM directement au réseau physique de l’hôte. Elle obtient une adresse IP du routeur (ex. box Internet) comme n’importe quel autre appareil.  
+\end{itemize}
+Ainsi, ton Mac et ta VM partagent le même réseau, ce qui autorise le ping, SSH, transferts de fichiers, etc.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={2. Vérification de l’adresse IP de la VM}]
+Sur ta VM Ubuntu :  
+\begin{verbatim}
+ip a
+\end{verbatim}
+Tu obtiens une adresse IP (exemple : 192.168.1.50) sur l’interface \texttt{ens33}.  
+C’est cette adresse que ton Mac utilisera pour communiquer avec la VM.
+
+Vérifie aussi que la VM a Internet :  
+\begin{verbatim}
+ping -c 4 8.8.8.8
+ping -c 4 google.com
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Tester la communication depuis le Mac}]
+Sur ton Mac, ouvre un terminal et exécute :  
+\begin{verbatim}
+ping 192.168.1.50
+\end{verbatim}
+(En remplaçant par l’adresse IP réelle de ta VM).  
+Si tu reçois des réponses, la communication réseau est fonctionnelle.
+
+\textbf{Astuce} : Pour connaître l’adresse IP de ton Mac et vérifier qu’il est dans le même sous-réseau :  
+\begin{verbatim}
+ifconfig
+\end{verbatim}
+Exemple : ton Mac est en 192.168.1.20 et ta VM en 192.168.1.50 → ils peuvent communiquer.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Activer SSH pour accéder à la VM depuis le Mac}]
+Sur ta VM Ubuntu, installe et active OpenSSH :  
+\begin{verbatim}
+sudo apt update
+sudo apt install openssh-server -y
+sudo systemctl enable ssh
+sudo systemctl start ssh
+\end{verbatim}
+
+Vérifie que le service tourne :  
+\begin{verbatim}
+sudo systemctl status ssh
+\end{verbatim}
+
+Ensuite, depuis ton Mac :  
+\begin{verbatim}
+ssh utilisateur@192.168.1.50
+\end{verbatim}
+(Remplace \texttt{utilisateur} par ton compte Ubuntu).  
+Tu auras alors un accès terminal direct à la VM depuis ton Mac.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Transférer des fichiers entre Mac et VM}]
+Depuis ton Mac, tu peux transférer un fichier vers la VM avec :  
+\begin{verbatim}
+scp fichier.txt utilisateur@192.168.1.50:/home/utilisateur/
+\end{verbatim}
+
+Et récupérer un fichier de la VM :  
+\begin{verbatim}
+scp utilisateur@192.168.1.50:/home/utilisateur/fichier.txt .
+\end{verbatim}
+Cela utilise le protocole SSH pour sécuriser les transferts.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={6. Points à vérifier en cas de problème}]
+\begin{itemize}
+  \item Vérifier que la VM et le Mac sont dans le même sous-réseau (192.168.1.x).  
+  \item Désactiver temporairement le pare-feu Ubuntu si besoin :
+\begin{verbatim}
+sudo ufw disable
+\end{verbatim}
+  \item Vérifier que le routeur/box autorise le bridge sur le Wi-Fi (certaines box bloquent le bridging sur Wi-Fi). Dans ce cas, forcer VMware à utiliser l’interface Wi-Fi dans les paramètres réseau avancés.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+En mode Bridged, ta VM Ubuntu devient un hôte du réseau local à part entière.  
+Depuis ton Mac, tu peux la joindre par son IP, la superviser avec GLPI, te connecter en SSH et transférer des fichiers.  
+Cette configuration est idéale pour des scénarios de supervision et d’administration réseau car elle reproduit le comportement d’une vraie machine physique connectée au LAN.
+\end{tcolorbox}
+
+
+
+\end{document}

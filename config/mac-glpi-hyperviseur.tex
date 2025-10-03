@@ -1,0 +1,198 @@
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Encodage & police ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{lmodern}
+\usepackage{url}
+
+
+% --- Mise en page ---
+\usepackage[margin=1.5cm]{geometry}
+
+% --- Couleurs ---
+\usepackage{xcolor}
+
+% --- Listings pour le code ---
+\usepackage{listings}
+\lstdefinelanguage{bash}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{teal!70!black},
+}
+
+\title{Mac: Installer GLPI dans un conteneur Docker et un hyperviseur}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\section{Cours : Installer un hyperviseur sur Mac et déployer GLPI via Docker}
+
+\tcbset{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+Les utilisateurs de Mac peuvent aussi pratiquer la virtualisation et l’installation de GLPI pour superviser des machines virtuelles.  
+Cependant, les outils disponibles diffèrent selon que le Mac soit équipé d’un processeur \textbf{Intel} ou \textbf{Apple Silicon (M1/M2/M3)}.  
+Dans ce cours, nous allons voir comment installer un hyperviseur adapté, puis comment déployer GLPI via Docker pour centraliser la supervision des VMs.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Choix de l’hyperviseur selon le type de Mac}]
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Type de Mac} & \textbf{Hyperviseur recommandé} & \textbf{Avantages} & \textbf{Inconvénients} \\
+\hline
+Mac Intel & VMware Fusion Player (gratuit) & Compatible VMware, stable & Nécessite Intel, pas ARM \\
+          & VirtualBox (gratuit)           & Simple, gratuit, multi-OS & Moins optimisé que Fusion \\
+\hline
+Mac Apple Silicon & UTM (gratuit)            & Compatible ARM, open-source & Performances moyennes en x86 \\
+                  & Parallels Desktop (payant) & Simple, performant & Licence payante \\
+                  & VMware Fusion Tech Preview & Support ARM & Encore en version test \\
+\hline
+\end{tabular}
+
+\medskip
+\textbf{Conclusion :}  
+\begin{itemize}
+  \item Sur Mac Intel → privilégier \textbf{VMware Fusion Player}.  
+  \item Sur Mac M1/M2/M3 → privilégier \textbf{UTM} (gratuit) ou \textbf{Docker Desktop} si l’objectif principal est GLPI.  
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={2. Installation d’un hyperviseur sur Mac}]
+\begin{enumerate}
+  \item Télécharger l’hyperviseur choisi :  
+    \begin{itemize}
+      \item VMware Fusion Player : \url{https://customerconnect.vmware.com/}  
+      \item VirtualBox : \url{https://www.virtualbox.org/}  
+      \item UTM : \url{https://mac.getutm.app/}  
+    \end{itemize}
+  \item Installer l’application en suivant l’assistant d’installation macOS.  
+  \item Créer une machine virtuelle avec Ubuntu/Debian (2 Go RAM, 20 Go disque, mode réseau Bridged recommandé).  
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Installation de Docker Desktop}]
+Docker permet de déployer GLPI sans avoir à installer manuellement Apache, PHP et MariaDB.  
+\begin{enumerate}
+  \item Télécharger Docker Desktop pour Mac (Intel ou Apple Silicon) : \url{https://www.docker.com/products/docker-desktop/}.  
+  \item Installer et lancer Docker Desktop.  
+  \item Vérifier l’installation :
+\begin{verbatim}
+docker --version
+\end{verbatim}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Déploiement de GLPI via Docker Compose}]
+\begin{enumerate}
+  \item Créer un dossier projet :
+\begin{verbatim}
+mkdir ~/glpi-docker
+cd ~/glpi-docker
+\end{verbatim}
+
+  \item Créer un fichier \texttt{docker-compose.yml} :
+\begin{verbatim}
+version: '3.3'
+services:
+  glpi:
+    image: diouxx/glpi
+    container_name: glpi
+    ports:
+      - "8080:80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - ./glpi:/var/www/html/glpi
+
+  db:
+    image: mariadb:10.5
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpipass
+    volumes:
+      - ./db:/var/lib/mysql
+\end{verbatim}
+
+  \item Lancer les conteneurs :
+\begin{verbatim}
+docker-compose up -d
+\end{verbatim}
+
+  \item Vérifier :
+\begin{verbatim}
+docker ps
+\end{verbatim}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Accéder à GLPI}]
+\begin{itemize}
+  \item Ouvrir le navigateur : \url{http://localhost:8080}  
+  \item Suivre l’assistant d’installation :  
+    \begin{itemize}
+      \item Choisir la langue.  
+      \item Base de données → hôte : \texttt{db}, utilisateur : \texttt{glpi}, mot de passe : \texttt{glpipass}, base : \texttt{glpi}.  
+    \end{itemize}
+  \item Une fois installé, l’interface GLPI est accessible et prête à recevoir des machines supervisées.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={6. Supervision des VMs avec l’agent GLPI}]
+Sur chaque VM Ubuntu/Debian créée dans l’hyperviseur, installer l’agent GLPI :  
+\begin{verbatim}
+wget https://github.com/glpi-project/glpi-agent/releases/download/1.9/glpi-agent_1.9-1_all.deb
+sudo dpkg -i glpi-agent_1.9-1_all.deb
+\end{verbatim}
+
+Configurer l’agent pour pointer vers le serveur GLPI (hôte Mac) :  
+\begin{verbatim}
+sudo nano /etc/glpi-agent/conf.d/server.conf
+\end{verbatim}
+
+Ajouter :
+\begin{verbatim}
+server = http://IP_MAC:8080/glpi
+\end{verbatim}
+
+Puis redémarrer le service :
+\begin{verbatim}
+sudo systemctl restart glpi-agent
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+Avec un Mac, il est possible de créer des environnements de virtualisation grâce à des hyperviseurs comme VMware Fusion, VirtualBox ou UTM.  
+En parallèle, l’utilisation de Docker Desktop simplifie le déploiement de GLPI.  
+Ainsi, les élèves peuvent mettre en place une infrastructure pédagogique où leur Mac héberge GLPI dans Docker, et leurs VMs (Ubuntu/Debian) sont supervisées via l’agent GLPI.
+\end{tcolorbox}
+
+
+\end{document}

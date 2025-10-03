@@ -1,0 +1,627 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Encodage & police ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{lmodern}
+\usepackage{url}
+
+
+% --- Mise en page ---
+\usepackage[margin=1.5cm]{geometry}
+
+% --- Couleurs ---
+\usepackage{xcolor}
+
+% --- Listings pour le code ---
+\usepackage{listings}
+\lstdefinelanguage{bash}{
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{teal!70!black},
+}
+
+\title{VM }
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section{Cours : Installation d’Ubuntu en Machine Virtuelle (VMware Workstation)}
+
+\tcbset{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+L’installation d’Ubuntu dans une machine virtuelle est une étape fondamentale pour apprendre à manipuler un système Linux sans impacter directement la machine hôte. Comprendre le processus permet de mieux diagnostiquer les problèmes courants (réseau, disque, clavier, langue, etc.) et d’exploiter correctement l’environnement virtuel.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Concepts de base}]
+\begin{itemize}
+  \item \textbf{Hyperviseur de type 2} : VMware Workstation est un hyperviseur fonctionnant sur un système d’exploitation hôte (Windows, Linux, macOS).  
+  \item \textbf{ISO Ubuntu} : image amorçable du système permettant soit d’utiliser Ubuntu en mode live, soit de l’installer sur disque.  
+  \item \textbf{Live session} : Ubuntu fonctionne uniquement en RAM, aucune donnée persistante après redémarrage.  
+  \item \textbf{VM Disk (VMDK)} : disque virtuel de la machine où sera installée Ubuntu de manière persistante.
+\end{itemize}
+\end{tcolorbox}
+
+
+
+
+\section{Hyperviseur : Définition et Rôle}
+
+\tcbset{colback=yellow!5!white,colframe=yellow!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Définition}]
+Un \textbf{hyperviseur} est un logiciel ou un micro-noyau qui permet de créer et de gérer des \emph{machines virtuelles} (VM).  
+Il agit comme une couche intermédiaire entre le matériel physique (processeur, mémoire, disque, cartes réseau) et les systèmes d’exploitation invités.  
+Chaque machine virtuelle croit disposer de ses propres ressources matérielles, alors qu’en réalité, celles-ci sont partagées et orchestrées par l’hyperviseur.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Types d’hyperviseurs}]
+On distingue deux grandes catégories :
+\begin{itemize}
+  \item \textbf{Hyperviseur de type 1 (bare-metal)} : installé directement sur le matériel, sans système d’exploitation hôte.  
+  Exemples : VMware ESXi, Microsoft Hyper-V Server, Xen.  
+  Avantage : performances élevées, adapté aux environnements de production.
+  
+  \item \textbf{Hyperviseur de type 2 (hosted)} : fonctionne au-dessus d’un système d’exploitation existant.  
+  Exemples : VMware Workstation, VirtualBox, Parallels Desktop.  
+  Avantage : simplicité d’utilisation pour les environnements de test et développement.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Rôle principal}]
+\begin{itemize}
+  \item \textbf{Isolation} : chaque VM est isolée des autres, ce qui permet de tester des systèmes ou applications sans affecter l’hôte.  
+  \item \textbf{Partage des ressources} : l’hyperviseur distribue la mémoire, les processeurs virtuels, l’espace disque et le réseau entre les VM.  
+  \item \textbf{Flexibilité} : possibilité d’exécuter plusieurs systèmes d’exploitation différents sur la même machine physique.  
+  \item \textbf{Gestion simplifiée} : création, duplication, sauvegarde et restauration de VM facilitée.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Exemple concret}]
+Dans le cas d’\textbf{Ubuntu installé sur VMware Workstation} :  
+\begin{itemize}
+  \item L’ordinateur physique (Windows/Linux/macOS) est l’\emph{hôte}.  
+  \item VMware Workstation est l’hyperviseur de type 2.  
+  \item Ubuntu est le système d’exploitation \emph{invité}, exécuté dans une machine virtuelle.  
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+L’hyperviseur est le cœur de la virtualisation : il permet d’exécuter plusieurs systèmes indépendants sur une même machine physique.  
+Comprendre sa fonction et ses types est indispensable avant de procéder à l’installation d’Ubuntu ou d’un autre OS dans une machine virtuelle.
+\end{tcolorbox}
+
+
+
+
+
+
+
+\begin{tcolorbox}[title={2. Création d’une VM dans VMware}]
+\begin{enumerate}
+  \item Créer une nouvelle machine virtuelle.  
+  \item Sélectionner l’ISO d’Ubuntu comme média d’installation.  
+  \item Choisir le type de firmware : BIOS ou UEFI.  
+  \item Allouer des ressources :
+    \begin{itemize}
+      \item \textbf{RAM} : au minimum 2 Go, recommandé 4 Go ou plus.  
+      \item \textbf{CPU} : au moins 2 vCPU.  
+      \item \textbf{Disque} : 20 Go minimum.  
+    \end{itemize}
+  \item Configurer la carte réseau : Bridged ou NAT.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Modes Réseau en VM}]
+\begin{itemize}
+  \item \textbf{NAT} : la VM utilise l’adresse IP de l’hôte et passe par la traduction d’adresses. Simple et fiable.  
+  \item \textbf{Bridged} : la VM apparaît comme une machine à part entière sur le réseau local et reçoit une IP du DHCP du réseau physique.  
+  \item \textbf{Host-only} : réseau isolé entre l’hôte et la VM, pas d’accès Internet.
+\end{itemize}
+
+\textbf{Important :} dans une VM, Ubuntu ne voit jamais directement le Wi-Fi de l’hôte. VMware lui présente toujours une carte \emph{Ethernet virtuelle} (souvent \texttt{ens33}). Le Wi-Fi est géré en transparence par l’hyperviseur.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Lancement de l’ISO et choix d’installation}]
+\begin{enumerate}
+  \item Démarrer la VM.  
+  \item L’ISO propose deux options :
+    \begin{itemize}
+      \item \textbf{Try Ubuntu (Live Session)} : test en mémoire vive, sans installation persistante.  
+      \item \textbf{Install Ubuntu} : lance l’assistant d’installation.  
+    \end{itemize}
+  \item Dans l’assistant :
+    \begin{itemize}
+      \item Choisir la langue du système.  
+      \item Choisir le clavier (souvent passer de QWERTY à AZERTY).  
+      \item Configurer le réseau : si aucune carte Wi-Fi n’apparaît, continuer avec l’interface Ethernet (ens33).  
+      \item Partitionner le disque virtuel : effacer le disque (VMDK) et installer Ubuntu dessus.  
+      \item Créer un utilisateur, mot de passe et définir le fuseau horaire.  
+    \end{itemize}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Gestion du clavier et des locales}]
+\begin{itemize}
+  \item Vérifier la configuration clavier : \texttt{sudo dpkg-reconfigure keyboard-configuration}.  
+  \item Vérifier la langue système : \texttt{locale}, \texttt{localectl status}.  
+  \item Installer un pack de langue : \texttt{sudo apt install language-pack-fr}.  
+  \item Changer la locale par défaut : \texttt{sudo update-locale LANG=fr\_FR.UTF-8}.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={6. Netplan et configuration réseau}]
+Ubuntu (depuis 18.04) utilise \textbf{Netplan} pour gérer le réseau :
+\begin{verbatim}
+sudo nano /etc/netplan/00-installer-config.yaml
+\end{verbatim}
+
+Exemple avec DHCP :
+\begin{verbatim}
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens33:
+      dhcp4: true
+\end{verbatim}
+
+Appliquer la configuration :
+\begin{verbatim}
+sudo netplan apply
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={7. Problèmes fréquents et solutions}]
+\begin{itemize}
+  \item \textbf{Pas de réseau détecté pendant l’installation} : normal, ignorer l’étape Wi-Fi et utiliser l’Ethernet virtuel.  
+  \item \textbf{Toujours retour à l’écran “Install Ubuntu” après reboot} : retirer l’ISO du lecteur virtuel dans VMware.  
+  \item \textbf{Clavier QWERTY au lieu d’AZERTY} : reconfigurer via \texttt{dpkg-reconfigure keyboard-configuration}.  
+  \item \textbf{Pas d’IP} : vérifier \texttt{ip a}, éditer Netplan et activer DHCP sur \texttt{ens33}.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+L’installation d’Ubuntu dans une VM nécessite de comprendre la distinction entre réseau hôte, carte virtuelle et live session. Les erreurs classiques (Wi-Fi non détecté, retour en mode live, clavier incorrect) sont dues au fonctionnement normal d’une VM. Avec une bonne maîtrise de VMware, Netplan et la configuration des locales, on obtient un système Ubuntu stable et fonctionnel dans un environnement virtualisé.
+\end{tcolorbox}
+
+
+\section{Cours : Installation d’Ubuntu en VM et Validation Post-Installation}
+
+\tcbset{colback=green!5!white,colframe=green!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+Après l’installation d’Ubuntu dans une machine virtuelle, il est essentiel de valider le bon fonctionnement du système.  
+Cette validation se fait à travers un ensemble de commandes de base qui permettent de vérifier la connectivité réseau, la configuration des interfaces, la gestion des paquets, et l’environnement linguistique du système.  
+Chaque commande a une utilité bien précise, que nous allons détailler.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Vérification du réseau}]
+\begin{enumerate}
+  \item \textbf{Afficher les interfaces réseau :}
+\begin{verbatim}
+ip a
+\end{verbatim}
+Montre toutes les interfaces disponibles (ex. \texttt{lo} pour loopback, \texttt{ens33} pour la carte VMware). Permet de vérifier si une adresse IP a été attribuée.
+
+  \item \textbf{Tester la connectivité IP :}
+\begin{verbatim}
+ping -c 4 8.8.8.8
+\end{verbatim}
+Envoie 4 paquets ICMP vers le serveur DNS de Google. Vérifie que la machine peut sortir sur Internet en niveau IP.
+
+  \item \textbf{Tester la résolution DNS :}
+\begin{verbatim}
+ping -c 4 google.com
+\end{verbatim}
+Permet de vérifier que le serveur DNS fonctionne et que la résolution de noms est correcte.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={2. Gestion du réseau avec Netplan}]
+\begin{enumerate}
+  \item \textbf{Vérifier les fichiers de configuration :}
+\begin{verbatim}
+ls /etc/netplan/
+\end{verbatim}
+Affiche les fichiers YAML utilisés par Netplan.
+
+  \item \textbf{Modifier la configuration réseau :}
+\begin{verbatim}
+sudo nano /etc/netplan/00-installer-config.yaml
+\end{verbatim}
+Permet d’activer le DHCP ou de fixer une adresse statique.
+
+  \item \textbf{Appliquer la configuration :}
+\begin{verbatim}
+sudo netplan apply
+\end{verbatim}
+Recharge la configuration réseau sans redémarrer.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Gestion des paquets et mises à jour}]
+\begin{enumerate}
+  \item \textbf{Mettre à jour la liste des paquets :}
+\begin{verbatim}
+sudo apt update
+\end{verbatim}
+Télécharge la liste des paquets disponibles depuis les dépôts configurés.
+
+  \item \textbf{Mettre à jour les paquets installés :}
+\begin{verbatim}
+sudo apt upgrade -y
+\end{verbatim}
+Installe les dernières versions des paquets présents sur le système.
+
+  \item \textbf{Installer un paquet de test (ex: curl) :}
+\begin{verbatim}
+sudo apt install curl
+\end{verbatim}
+Vérifie que la gestion des paquets fonctionne correctement.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Vérification des locales et du clavier}]
+\begin{enumerate}
+  \item \textbf{Vérifier la langue système :}
+\begin{verbatim}
+locale
+\end{verbatim}
+Affiche les variables de langue en cours (ex. \texttt{LANG=fr\_FR.UTF-8}).
+
+  \item \textbf{Installer le pack de langue français :}
+\begin{verbatim}
+sudo apt install language-pack-fr
+\end{verbatim}
+Ajoute les traductions et paramètres linguistiques.
+
+  \item \textbf{Changer la locale par défaut :}
+\begin{verbatim}
+sudo update-locale LANG=fr_FR.UTF-8
+\end{verbatim}
+Met le français comme langue par défaut au redémarrage.
+
+  \item \textbf{Configurer le clavier :}
+\begin{verbatim}
+sudo dpkg-reconfigure keyboard-configuration
+\end{verbatim}
+Permet de choisir un clavier AZERTY au lieu du QWERTY.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Vérification du disque et du système}]
+\begin{enumerate}
+  \item \textbf{Lister les disques et partitions :}
+\begin{verbatim}
+lsblk
+\end{verbatim}
+Affiche les périphériques de stockage (\texttt{sda}, \texttt{sr0}, etc.).
+
+  \item \textbf{Vérifier l’espace disque utilisé :}
+\begin{verbatim}
+df -h
+\end{verbatim}
+Montre l’utilisation du disque avec des tailles lisibles (Go).
+
+  \item \textbf{Vérifier la mémoire RAM :}
+\begin{verbatim}
+free -h
+\end{verbatim}
+Permet de voir l’utilisation de la mémoire.
+\end{enumerate}
+\end{tcolorbox}
+
+
+
+
+\begin{tcolorbox}[title={Conclusion}]
+Ces commandes constituent la base de la validation post-installation d’Ubuntu dans une machine virtuelle.  
+Elles permettent de vérifier le réseau, les locales, la gestion des paquets et les ressources système.  
+Maîtriser ces notions est indispensable pour comprendre le fonctionnement d’Ubuntu et diagnostiquer rapidement tout problème après une installation en VM.
+\end{tcolorbox}
+
+
+
+
+\section{Cours : Déploiement de GLPI avec Docker sur Windows et Supervision d’une VM Linux}
+
+\tcbset{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+GLPI est une solution libre de gestion de parc informatique et de supervision.  
+Sur un hôte Windows, il est possible de déployer GLPI facilement en utilisant Docker, ce qui évite d’installer manuellement Apache, PHP et MariaDB.  
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Préparation de l’environnement}]
+\begin{enumerate}
+  \item Télécharger et installer \textbf{Docker Desktop for Windows} depuis \url{https://www.docker.com/products/docker-desktop/}.  
+  \item Vérifier que Docker fonctionne :
+\begin{verbatim}
+docker --version
+\end{verbatim}
+  \item Créer un dossier de projet, par exemple :
+\begin{verbatim}
+mkdir C:\glpi-docker
+cd C:\glpi-docker
+\end{verbatim}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={2. Création du fichier Docker Compose}]
+Créer un fichier \texttt{docker-compose.yml} dans le dossier \texttt{C:\textbackslash glpi-docker} :  
+
+\begin{verbatim}
+version: '3.3'
+services:
+  glpi:
+    image: diouxx/glpi
+    container_name: glpi
+    ports:
+      - "8080:80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - ./glpi:/var/www/html/glpi
+
+  db:
+    image: mariadb:10.5
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpipass
+    volumes:
+      - ./db:/var/lib/mysql
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Démarrage des conteneurs}]
+\begin{enumerate}
+  \item Démarrer GLPI et MariaDB :
+\begin{verbatim}
+docker-compose up -d
+\end{verbatim}
+
+  \item Vérifier l’état des conteneurs :
+\begin{verbatim}
+docker ps
+\end{verbatim}
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Accéder à GLPI}]
+\begin{itemize}
+  \item Ouvrir le navigateur et accéder à : \url{http://localhost:8080}  
+  \item Suivre l’assistant d’installation :  
+  \begin{itemize}
+    \item Choisir la langue.  
+    \item Entrer les informations de base de données :  
+      \begin{itemize}
+        \item Hôte : \texttt{db}  
+        \item Base : \texttt{glpi}  
+        \item Utilisateur : \texttt{glpi}  
+        \item Mot de passe : \texttt{glpipass}  
+      \end{itemize}
+  \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Installer l’agent GLPI sur la VM Linux}]
+Sur la machine virtuelle (Ubuntu/Debian) supervisée :  
+
+\begin{verbatim}
+wget https://github.com/glpi-project/glpi-agent/releases/download/1.9/glpi-agent_1.9-1_all.deb
+sudo dpkg -i glpi-agent_1.9-1_all.deb
+\end{verbatim}
+
+Configurer l’agent pour pointer vers l’hôte Windows :  
+
+\begin{verbatim}
+sudo nano /etc/glpi-agent/conf.d/server.conf
+\end{verbatim}
+
+Ajouter la ligne suivante (remplacer IP\_HOTE par l’IP réelle de l’hôte Windows) :  
+
+\begin{verbatim}
+% server = http://IP_HOTE:8080/glpi
+\end{verbatim}
+
+Puis redémarrer le service agent :  
+\begin{verbatim}
+sudo systemctl restart glpi-agent
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={6. Résultat attendu}]
+\begin{itemize}
+  \item L’hôte Windows exécute GLPI via Docker.  
+  \item La VM Linux envoie automatiquement ses informations à GLPI grâce à l’agent.  
+  \item Depuis l’interface web GLPI, il est possible de visualiser les caractéristiques matérielles, l’OS, le réseau et les logiciels installés sur la VM.  
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+Le déploiement de GLPI avec Docker simplifie grandement l’installation sur un hôte Windows.  
+Une fois installé, GLPI peut centraliser la supervision et la gestion de multiples machines virtuelles ou physiques grâce aux agents installés sur chaque système supervisé.  
+Cette approche est évolutive, car il est possible d’ajouter de nouvelles VMs ou serveurs en configurant simplement leur agent GLPI pour pointer vers le serveur central.
+\end{tcolorbox}
+
+
+\section{Cours : Commandes \texttt{sh} essentielles pour le déploiement de GLPI avec Docker}
+
+\tcbset{colback=green!5!white,colframe=green!75!black,fonttitle=\bfseries}
+
+\begin{tcolorbox}[title={Introduction}]
+Lorsque l’on déploie GLPI avec Docker, il est nécessaire de maîtriser certaines commandes Unix (sh/bash) pour installer des paquets, gérer les services, configurer les agents et vérifier l’état du système.  
+Ce cours présente les commandes les plus importantes dans ce contexte et leur utilité.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={1. Commandes de gestion des paquets (APT)}]
+\begin{itemize}
+  \item \textbf{Mettre à jour la liste des paquets disponibles} :
+\begin{verbatim}
+sudo apt update
+\end{verbatim}
+Cette commande interroge les dépôts configurés et récupère les dernières informations sur les paquets.
+
+  \item \textbf{Mettre à jour les paquets installés} :
+\begin{verbatim}
+sudo apt upgrade -y
+\end{verbatim}
+Télécharge et installe les nouvelles versions des logiciels présents.
+
+  \item \textbf{Installer un paquet spécifique (exemple : curl)} :
+\begin{verbatim}
+sudo apt install curl
+\end{verbatim}
+Permet d’ajouter de nouveaux logiciels ou utilitaires.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={2. Commandes réseau}]
+\begin{itemize}
+  \item \textbf{Vérifier les interfaces réseau} :
+\begin{verbatim}
+ip a
+\end{verbatim}
+Affiche les interfaces disponibles (ex. ens33) et leurs adresses IP.
+
+  \item \textbf{Tester la connectivité IP} :
+\begin{verbatim}
+ping -c 4 8.8.8.8
+\end{verbatim}
+Vérifie que la VM peut atteindre Internet au niveau IP.
+
+  \item \textbf{Tester la résolution DNS} :
+\begin{verbatim}
+ping -c 4 google.com
+\end{verbatim}
+Vérifie que la résolution de noms fonctionne correctement.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={3. Commandes de gestion des services}]
+\begin{itemize}
+  \item \textbf{Redémarrer un service (exemple : glpi-agent)} :
+\begin{verbatim}
+sudo systemctl restart glpi-agent
+\end{verbatim}
+Recharge la configuration d’un service sans redémarrage complet.
+
+  \item \textbf{Vérifier le statut d’un service} :
+\begin{verbatim}
+sudo systemctl status glpi-agent
+\end{verbatim}
+Affiche si le service est actif et ses éventuelles erreurs.
+
+  \item \textbf{Activer un service au démarrage} :
+\begin{verbatim}
+sudo systemctl enable glpi-agent
+\end{verbatim}
+Assure que l’agent GLPI démarre automatiquement à chaque boot.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={4. Commandes liées aux fichiers et configuration}]
+\begin{itemize}
+  \item \textbf{Éditer un fichier de configuration} :
+\begin{verbatim}
+sudo nano /etc/glpi-agent/conf.d/server.conf
+\end{verbatim}
+Nano est un éditeur de texte simple pour modifier les fichiers système.
+
+  \item \textbf{Lister les fichiers et répertoires} :
+\begin{verbatim}
+ls -l /etc/glpi-agent/conf.d/
+\end{verbatim}
+Affiche les fichiers présents avec leurs permissions.
+
+  \item \textbf{Afficher le contenu d’un fichier} :
+\begin{verbatim}
+cat /etc/glpi-agent/conf.d/server.conf
+\end{verbatim}
+Utile pour vérifier une configuration sans l’éditer.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={5. Commandes Docker importantes}]
+\begin{itemize}
+  \item \textbf{Lancer les conteneurs en arrière-plan} :
+\begin{verbatim}
+docker-compose up -d
+\end{verbatim}
+
+  \item \textbf{Lister les conteneurs actifs} :
+\begin{verbatim}
+docker ps
+\end{verbatim}
+
+  \item \textbf{Arrêter les conteneurs} :
+\begin{verbatim}
+docker-compose down
+\end{verbatim}
+
+  \item \textbf{Vérifier les logs d’un conteneur (exemple : glpi)} :
+\begin{verbatim}
+docker logs glpi
+\end{verbatim}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={6. Commandes système utiles}]
+\begin{itemize}
+  \item \textbf{Vérifier l’espace disque} :
+\begin{verbatim}
+df -h
+\end{verbatim}
+
+  \item \textbf{Vérifier l’utilisation mémoire} :
+\begin{verbatim}
+free -h
+\end{verbatim}
+
+  \item \textbf{Connaître l’OS et la version} :
+\begin{verbatim}
+lsb_release -a
+\end{verbatim}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title={Conclusion}]
+Ces commandes sont essentielles pour gérer efficacement une installation de GLPI avec Docker et superviser une machine virtuelle.  
+Elles couvrent la gestion du réseau, des services, des fichiers, du système et des conteneurs Docker.  
+Maîtriser ces commandes permet de diagnostiquer rapidement tout problème rencontré lors de l’installation et de l’exploitation.
+\end{tcolorbox}
+
+
+
+
+\end{document}
