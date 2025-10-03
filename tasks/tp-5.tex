@@ -1,0 +1,203 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{xcolor} % to access the named colour LightGray
+\definecolor{LightGray}{gray}{0.9}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Travaux Pratiques},
+    pdfpagemode=FullScreen,
+    }
+\graphicspath{{images/}} 
+
+\title{TP 5}
+\author{Formateur: Boris Rose}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Objectifs pédagogiques}
+
+\begin{tcolorbox}[colback=cyan!5,colframe=cyan!60!black,title=Objectifs]
+   \begin{itemize}
+    \item Comprendre les éléments de configuration de GLPI 
+    \item Virtualiser un parc informatique 
+    \item Permettre une communication peer-to-peer sur un réseau privé
+   \end{itemize}
+\end{tcolorbox}
+
+
+\section{Consignes}
+\begin{tcolorbox}[colback=cyan!5,colframe=cyan!60!black,title=Consignes]
+   \begin{itemize}
+    \item 
+   \end{itemize}
+\end{tcolorbox}
+
+
+
+
+\section{Figma}
+
+\begin{tcolorbox}[colback=cyan!5,colframe=cyan!60!black,title=Figma du Cours]
+    \url{https://www.figma.com/board/7tc1gkdVbMGXBPO6ucIDCu/Sc%C3%A9narios?node-id=707-892&t=rUb3lOtsKM8l73vp-1}
+\end{tcolorbox}
+
+
+
+
+
+
+
+\section{VM}
+
+\begin{itemize}
+    \item Qu'est qu'ISO Ubuntu ?
+    \item Que signifie Live Session dans le cas d'ISO Ubuntu ?
+    \item Qu'est-ce que la RAM ?
+    \item Qu'est-ce que le VM Disk ?
+    \item Que sous-entend la notion de systèmes d'exploitation invités ?
+    \item \textit{Chaque machine virtuelle croit disposer de ses propres ressources matérielles ...} Que sous-entend cette phrase ?
+    \item Quel est le rôle de l'hyperviseur ?
+\end{itemize}
+
+
+\section{Locale}
+
+\begin{itemize}
+    \item Que signifient les commandes suivantes ?
+\end{itemize}
+\begin{minted}{bash}
+    locale
+    localectl status.
+\end{minted}
+
+\section{Netplan}
+
+\begin{itemize}
+    \item Qu'est-ce que netplan pour Ubuntu ? (voir l'extrait de code ci-dessous)
+    \item Qu'est-ce qu'est-ce que le service DHCP ?
+\end{itemize}
+
+\begin{minted}{yaml}
+#sudo nano /etc/netplan/00-installer-config.yaml
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens33:
+      dhcp4: true
+    
+\end{minted}
+
+
+\section{SSH}
+
+\begin{minted}{bash}
+
+    sudo apt update
+    sudo apt install openssh-server -y
+    sudo systemctl enable ssh
+    sudo systemctl start ssh
+    
+\end{minted}
+\begin{itemize}
+    \item À quoi servent les commandes ci-dessus ? 
+\end{itemize}
+
+
+\section{ICMP et DNS}
+
+\begin{itemize}
+    \item Qu'est-ce que le protocole ICMP 
+    \item Qu'est-ce qu'un serveur DNS 
+    \item Schématiser le fonctionnement du réseau DNS
+    \item Comment envoyer 4 paquets ICMP vers le serveur DNS de Google ?
+\end{itemize}
+
+
+\section{Vérification du disque et du système}
+
+\begin{itemize}
+    \item Quelle est la commande sous Ubuntu qui permet de  lister les disques et partitions ?
+    \item Celle qui permet de vérifier l’espace disque utilisé ?
+    \item Celle qui permet de cérifier la mémoire RAM ?
+\end{itemize}
+
+
+
+\section{Docker}
+
+
+\begin{itemize}
+    \item Qu'est-ce que Docker 
+    \item Comparer Docker avec la Virtualisation Machine
+    \item Combien de conteneurs vais-je créer en demandant à Docker de lire le fichier de configuration ci-dessous ?
+\end{itemize}
+
+
+
+
+\begin{minted}{yaml}
+
+
+version: '3.3'
+services:
+  glpi:
+    image: diouxx/glpi
+    container_name: glpi
+    ports:
+      - "8080:80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - ./glpi:/var/www/html/glpi
+
+  db:
+    image: mariadb:10.5
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: caroline123
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: caroline123
+    volumes:
+      - ./db:/var/lib/mysql
+
+
+    
+\end{minted}
+
+
+\begin{itemize}
+    \item Que font les commandes suivantes ? Où est-ce qu'on doit les exécuter à votre avis ? Sur l'hôte Windows en sachant qu'il s'agit du serveur GLPI ou sur la VM objet de la supervision ?
+\end{itemize}
+
+\begin{minted}{bash}
+    
+    wget https://github.com/glpi-project/glpi-agent/releases/download/1.9/glpi-agent_1.9-1_all.deb
+    
+    sudo dpkg -i glpi-agent_1.9-1_all.deb
+
+    sudo nano /etc/glpi-agent/conf.d/server.conf
+    # in the server.conf add this % server = http://IP_HOST:8080/glpi 
+    # where IP_HOST is replaced by the true server ip address
+    sudo systemctl restart glpi-agent
+    
+\end{minted}
+
+
+
+\end{document}
