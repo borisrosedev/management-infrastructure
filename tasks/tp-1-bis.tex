@@ -1,0 +1,135 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage[margin=1.5cm]{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Travaux Pratiques},
+    pdfpagemode=FullScreen,
+    }
+\graphicspath{{images/}} 
+
+\title{TP 1 bis : Gestion des incidents }
+\author{Formateur: Boris Rose}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+\begin{tcolorbox}[colback=brown!5,colframe=brown!60!black,title=Consignes]
+
+\begin{itemize}
+    \item Créer un dépôt sur github ou gitlab si ce n'est pas déjà fait (voir la vidéo dans le dossier google drive que j'ai partagé)
+    \item Dans ce dépôt que vous aurez créé, faire les différents tps dans différentes branches
+    \item Chaque branche doit commencer par feature/ suivi du nom du tp 
+\end{itemize}
+
+\end{tcolorbox}
+
+
+\section*{Consignes}
+
+\begin{tcolorbox}[colback=cyan!5,colframe=cyan!60!black,title=Figma d'étude]
+    Vous répondrez aux questions en vous aidant du cours ( voir Drive ) et du lien vers le Figma du scénario suivant: 
+    \url{https://www.figma.com/board/7tc1gkdVbMGXBPO6ucIDCu/Sc\%C3\%A9narios?node-id=988-3446&t=eyBtpBONZV4mkin3-1}
+\end{tcolorbox}
+
+
+\section*{Partie 0: Installer GLPI}
+\paragraph{\color{red}{Si vous n'avez pas déjà fait cela dans le TP1}}
+
+L'idée est de suivre ce qui est dans le cours, dans le dossier config:
+\begin{itemize}
+    \item mac-glpi-hyperviseur.pdf 
+    \item mac-vm-communication.pdf
+    \item vm-ubuntu.pdf
+\end{itemize}
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!60!black,title=Attention]
+Si pour d'autres matières vous avez déjà des machines virtuelles managées par un hyperviseur (T2) tel que VMWorstation ou VirtualBox 
+installez les agents GLPI dans ces MV. Autrement dit vous n'avez pas besoin d'installer une VM avec OS Ubuntu.
+\end{tcolorbox}
+
+\section*{Partie 1 : Gestion des incidents}
+
+
+\begin{tcolorbox}[colback=brown!5,colframe=brown!60!black,title=Définition]
+    La gestion des incidents est le processus permettant de détecter, enregistrer, diagnostiquer et
+résoudre les pannes informatiques.
+Un incident est un événement imprévu perturbant le fonctionnement normal d’un service
+informatique 
+\end{tcolorbox}
+
+\begin{itemize}
+    \item Quel incident peut concerner le serveur web de l'entreprise sur le diagramme Figma ?
+    \item Donner la liste des logiciels critiques installés sur le disque ssd du serveur physique dont avait trait la question précédente ?
+    \item Quel est la relation entre GLPI et cet incident ?
+    \item Quel logiciel peut jouer le rôle d'intermédiaire entre GLPI et l'incident ?
+    \item Quelles seraient les bonnes pratiques ITIL par rapport à la gestion de cet incident ?
+\end{itemize}
+
+
+\section*{Partie 2 : Supervision et monitoring}
+
+
+\begin{tcolorbox}[colback=brown!5,colframe=brown!60!black,title=Définition]
+La supervision permet de surveiller en temps réel l’état du parc (CPU, mémoire, réseau,
+disques).
+\end{tcolorbox}
+
+
+
+\begin{itemize}
+    \item Quels sont les outils que vous auriez pu combiner ( voir le cours ) pour faire une supervision réseau et avoir une visualisation des métriques de performance
+\end{itemize}
+
+
+
+\section*{Partie 3 : Sécurité du parc informatique}
+
+
+\begin{tcolorbox}[colback=brown!5,colframe=brown!60!black,title=Définition]
+La sécurité du parc regroupe les mesures techniques et organisationnelles pour protéger le
+matériel et les données.
+\end{tcolorbox}
+
+\begin{itemize}
+    \item Quels sont les mesures prises ( dans le scénario du Figma ) pour sécuriser le parc informatique ?
+\end{itemize}
+
+
+\section*{Partie 4 : Demandes utilisateur}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!60!black,title=Figme d'étude (difficile)]
+Observer le scénario suivant pour répondre aux question: 
+\url{https://www.figma.com/board/7tc1gkdVbMGXBPO6ucIDCu/Sc%C3%A9narios?node-id=707-892&t=eyBtpBONZV4mkin3-1}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=brown!5,colframe=brown!60!black,title=Définition]
+Une demande utilisateur est une requête planifiée ou standard, souvent récurrente et docu-
+mentée. Contrairement à un incident, elle ne traduit pas une panne mais un besoin d’assistance
+ou d’accès.
+\end{tcolorbox}
+
+\begin{itemize}
+    \item Trouvez dans le scénario Figma la demande utilisateur ?  
+    \item Quel est le cycle de vie d’une demande utilisateur ( voir le cours )
+\end{itemize}
+
+\end{document}
+
+
+
+
+
